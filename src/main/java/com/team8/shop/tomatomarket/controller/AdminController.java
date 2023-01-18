@@ -23,9 +23,21 @@ public class AdminController {
         return sellerService.getSellerList();
     }
 
+    @PatchMapping("/sellers/{sellerId}")
+    @Secured(UserRoleEnum.Authority.ADMIN)
+    public void disapproveSellerAuth(@PathVariable Long sellerId){
+        sellerService.disapproveSellerAuth(sellerId);
+    }
+
     @GetMapping("/auth/waitings")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public List<GetSellerWaitingsRespDto> getSellerWaitings(){
         return sellerRequestFormService.getSellerWaitings();
+    }
+
+    @PatchMapping("/auth/waiting/{waitingId}")
+    @Secured(UserRoleEnum.Authority.ADMIN)
+    public void approveSellerAuth(@PathVariable Long waitingId){
+        sellerRequestFormService.approveSellerAuth(waitingId);
     }
 }

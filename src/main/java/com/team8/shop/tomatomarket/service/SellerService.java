@@ -4,4 +4,6 @@ import com.team8.shop.tomatomarket.dto.GetSellerRespDto;
 
 public interface SellerService {
     GetSellerRespDto getSeller(Long sellerId);
+
+    void disapproveSellerAuth(Long sellerId);
 }

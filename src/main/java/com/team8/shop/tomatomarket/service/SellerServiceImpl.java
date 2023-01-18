@@ -30,4 +30,20 @@ public class SellerServiceImpl implements SellerService{
 
         return new GetSellerRespDto(seller, products);
     }
+
+    @Override
+    public void disapproveSellerAuth(Long sellerId) {
+        Seller seller = sellerRepository.findById(sellerId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
+        );
+
+        // 셀러를 제거해준다.
+        seller.remove();
+
+        // 유저의 권한을 고객으로 변경한다.
+        seller.getUser().setRoleCustomer();
+
+        // 변경사항을 저장합니다.
+        sellerRepository.save(seller);
+    }
 }

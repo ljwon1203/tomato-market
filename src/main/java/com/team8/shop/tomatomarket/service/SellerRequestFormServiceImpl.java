@@ -14,6 +14,7 @@ import java.util.Optional;
 public class SellerRequestFormServiceImpl implements SellerRequestFormService{
 
     private final UserRepository userRepository;
+    private final SellerRepository sellerRepository;
     private final SellerRequestFormRepository sellerRequestFormRepository;
 
     @Override
@@ -36,5 +37,36 @@ public class SellerRequestFormServiceImpl implements SellerRequestFormService{
             instance = new SellerRequestForm(user, introduce);
         }
         sellerRequestFormRepository.save(instance);
+    }
+    
+    @Override
+    public List<GetSellerWaitingsRespDto> getSellerWaitings() {
+        return sellerRequestFormRepository.findAll()
+                                            .stream()
+                                            .map(GetSellerWaitingsRespDto::new)
+                                            .collect(Collectors.toList());
+    }
+
+    @Override
+    public void approveSellerAuth(Long waitingId) {
+        // id에 해당되는 요청폼을 불러옵니다.
+        SellerRequestForm waiting = sellerRequestFormRepository.findById(waitingId).orElseThrow(
+                () -> new IllegalArgumentException("요청이 존재하지 않습니다.")
+        );
+
+        // 요청폼으로부터 유저정보를 불러와서, role을 변경해줍니다.
+        User user = waiting.getUser();
+        user.setRoleSeller();
+
+        // role을 변경한 user와 저장되어있던 introduce를 이용해 새로운 seller 객체를 만듭니다.
+        Seller seller = new Seller(user, waiting.getIntroduce());
+
+        // 모든 작업을 마친 뒤, 요청폼의 승인여부를 승인으로 변경해줍니다.
+        waiting.approve();
+
+        // 변경된 모든 entity를 repository에 저장합니다.
+        userRepository.save(user);
+        sellerRepository.save(seller);
+        sellerRequestFormRepository.save(waiting);
     }
 }
