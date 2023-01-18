@@ -27,8 +27,12 @@ public class UserController {
 
     @PatchMapping("/users/{userId}")
     public UserResponseDto setProfile(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.update(userId, userRequestDto, userDetails.getUser());
-    }//Api서 나에 대한 정보를 구분할 수가 없다.
+        if(userDetails.getUser().getId().equals(userId)){
+            UserMyProfileDto userMyProfileDto = new UserMyProfileDto(userDetails.getUsername(),userRequestDto.getNickname());
+            return userService.update(userMyProfileDto);
+        }
+        else {throw new IllegalArgumentException();}
+    }
 
 
     @GetMapping("/users/{userId}")

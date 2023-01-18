@@ -1,5 +1,6 @@
 package com.team8.shop.tomatomarket.service;
 
+import com.team8.shop.tomatomarket.dto.UserMyProfileDto;
 import com.team8.shop.tomatomarket.dto.UserRequestDto;
 import com.team8.shop.tomatomarket.dto.UserResponseDto;
 import com.team8.shop.tomatomarket.entity.User;
@@ -9,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,15 +19,18 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public UserResponseDto update(Long userId, UserRequestDto userRequestDto, User user){
+    public UserResponseDto update(UserMyProfileDto userMyProfileDto){
+        String username = userMyProfileDto.getUsername();
+        String nickname = userMyProfileDto.getNickName();
 
-        if(user.isRole() || user.isValidId(user.getId()))
+        User user = userRepository.findByUsername(username).orElseThrow(()->new IllegalArgumentException("존재하지 않는 사용자가 없습니다"));
+
+        if(user.isRole() || user.isValidUsername(user.getUsername()))
         {
-            user.updateNickName(userRequestDto.getNickname());
+            user.updateNickName(nickname);
             return new UserResponseDto(user);
         }
         throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
-        //
     }
 
     @Transactional
