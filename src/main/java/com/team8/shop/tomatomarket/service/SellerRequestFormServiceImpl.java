@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class SellerRequestFormServiceImpl implements SellerRequestFormService{
 
     private final UserRepository userRepository;
+    private final SellerRepository sellerRepository;
     private final SellerRequestFormRepository sellerRequestFormRepository;
 
     @Override
