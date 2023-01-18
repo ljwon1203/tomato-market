@@ -11,11 +11,9 @@ import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
     private final User user;
-    private final String username;
 
-    public UserDetailsImpl(User user, String username){
+    public UserDetailsImpl(User user){
         this.user = user;
-        this.username = username;
     }
 
     public User getUser(){
@@ -34,14 +32,21 @@ public class UserDetailsImpl implements UserDetails {
         return authorities;
     }
 
+
+    public Long getUserId(){
+        return user.getId();
+    }
+
+
     @Override
     public String getPassword() {
         return null;
     }
 
+
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return null;
     }
 
     @Override
