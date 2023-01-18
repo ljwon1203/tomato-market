@@ -8,4 +8,6 @@ public interface SellerRequestFormService {
     void createDisapprovedForm(CreateDisapprovedSellerFormReqDto dto);
 
     List<GetSellerWaitingsRespDto> getSellerWaitings();
+
+    void approveSellerAuth(Long waitingId);
 }
