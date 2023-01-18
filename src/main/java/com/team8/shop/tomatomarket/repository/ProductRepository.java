@@ -9,4 +9,6 @@ import java.util.List;
 public interface ProductRepository {
     List<Product> findAllByOrderByModifiedAtDesc();
     List<Product> findAllById(Long id);
+
+    List<Product> findAllBySellerId(Long id);
 }

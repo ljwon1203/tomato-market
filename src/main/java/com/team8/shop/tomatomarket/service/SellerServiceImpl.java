@@ -1,17 +1,15 @@
 package com.team8.shop.tomatomarket.service;
 
 import com.team8.shop.tomatomarket.dto.GetSellerRespDto;
-import com.team8.shop.tomatomarket.dto.ProductResponseDto;
 import com.team8.shop.tomatomarket.entity.Product;
-import com.team8.shop.tomatomarket.entity.ProductCategory;
 import com.team8.shop.tomatomarket.entity.Seller;
+import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class SellerServiceImpl implements SellerService{
@@ -37,7 +35,7 @@ public class SellerServiceImpl implements SellerService{
         // sellerPepository에 있는걸 가져와서 sellerList에 넣음 List
 
         List<GetSellerRespDto> getSellerRespDtos = new ArrayList<>();
-        // getsellerPespDtos ArrayList로 만든다.
+        // getsellerRespDtos ArrayList로 만든다.
         for (Seller seller : sellerList) {
             List<Product> products = productRepository.findAllById(seller.getId()).orElse(new ArrayList<>());
             getSellerRespDtos.add(new GetSellerRespDto(seller, products));
@@ -47,6 +45,18 @@ public class SellerServiceImpl implements SellerService{
         return getSellerRespDtos;
             //반환해준다
 
+    }
 
+    //#19 (판매자) 나의 판매상품 조회
+    public GetSellerRespDto getMyProductList(User user) {
+        Seller seller = sellerRepository.findById(user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("권한이 없습니다.")
+        );
+        // userId를 사용해서 sellerRepository에 등록되어 있는 값을 가져와 seller에 담아준다.
+        // seller가 아닐 경우 IllegalArgumentException 발생
+
+        List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
+        // sellerId를 사용해서 productRepository에 등록되어있는 product를 products에 담아준다.
+        return new GetSellerRespDto(seller, products);
     }
 }
