@@ -5,7 +5,6 @@ import com.team8.shop.tomatomarket.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,7 +18,7 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-@Slf4j
+
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
@@ -77,15 +76,14 @@ public class JwtUtils {
             // 토큰 검증 시스템
             return true;
         } catch (SecurityException | MalformedJwtException e){
-            log.info("유효하지 않은 JWT 서명입니다.");
+            throw new IllegalArgumentException("유효하지 않은 JWT 서명입니다.");
         } catch (ExpiredJwtException e){
-            log.info("만료된 토큰입니다.");
+            throw new IllegalArgumentException("만료된 토큰입니다.");
         } catch (UnsupportedJwtException e){
-            log.info("지원되지 않은 토큰입니다.");
+            throw new IllegalArgumentException("지원되지 않은 토큰입니다.");
         } catch (IllegalArgumentException e){
-            log.info("잘못된 토큰입니다.");
+            throw new IllegalArgumentException("잘못된 토큰입니다.");
         }
-        return false;
     }
 
 
