@@ -1,5 +1,6 @@
 package com.team8.shop.tomatomarket.entity;
 
+import com.team8.shop.tomatomarket.dto.UserRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -45,10 +46,13 @@ public class User {
         return this.password.equals(password);
     }
 
-    // 닉네임 업데이트
+    //닉네임 업데이트
     public void updateNickName(String nickname){
         this.nickname = nickname;
     }
+//    public void updateNickName(UserRequestDto userRequestDto){
+//        this.nickname = userRequestDto.getNickname();
+//    }
 
     // Seller -> Customer 로 역할을 변경 시 사용합니다.
     public void setRoleCustomer(){
@@ -58,5 +62,14 @@ public class User {
     // Customer -> Seller 역할 변경 시 사용합니다.
     public void setRoleSeller(){
         this.role = UserRoleEnum.SELLER;
+    }
+
+    // Id 확인용
+    public boolean isValidId(Long Id){
+        return this.Id.equals(Id);
+    }
+    // 역활 확인용
+    public boolean isRole() {
+        return role.equals(UserRoleEnum.ADMIN);
     }
 }
