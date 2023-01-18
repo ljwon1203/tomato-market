@@ -1,15 +1,13 @@
 package com.team8.shop.tomatomarket.service;
 
-import com.team8.shop.tomatomarket.dto.*;
+import com.team8.shop.tomatomarket.dto.CreateDisapprovedSellerFormReqDto;
 import com.team8.shop.tomatomarket.entity.*;
 import com.team8.shop.tomatomarket.repository.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +38,7 @@ public class SellerRequestFormServiceImpl implements SellerRequestFormService{
         }
         sellerRequestFormRepository.save(instance);
     }
-
+    
     @Override
     public List<GetSellerWaitingsRespDto> getSellerWaitings() {
         return sellerRequestFormRepository.findAll()

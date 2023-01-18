@@ -1,13 +1,13 @@
 package com.team8.shop.tomatomarket.entity;
 
 public enum UserRoleEnum {
-    CUSTOMER(Authority.CUSTOMER),
+    ADMIN(Authority.ADMIN),
     SELLER(Authority.SELLER),
-    ADMIN(Authority.ADMIN);
+    CUSTOMER(Authority.CUSTOMER);
 
     private final String authority;
 
-    UserRoleEnum(String authority) {
+    UserRoleEnum(String authority){
         this.authority = authority;
     }
 
@@ -15,9 +15,9 @@ public enum UserRoleEnum {
         return this.authority;
     }
 
-    public static final class Authority{
-        public static final String CUSTOMER = "ROLE_CUSTOMER";
-        public static final String SELLER = "ROLE_SELLER";
+    public static class Authority{
         public static final String ADMIN = "ROLE_ADMIN";
+        public static final String SELLER = "ROLE_SELLER";
+        public static final String CUSTOMER = "ROLE_CUSTOMER";
     }
 }
