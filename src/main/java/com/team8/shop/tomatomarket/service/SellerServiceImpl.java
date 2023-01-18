@@ -7,10 +7,13 @@ import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 @RequiredArgsConstructor
 public class SellerServiceImpl implements SellerService{
     private final SellerRepository sellerRepository;

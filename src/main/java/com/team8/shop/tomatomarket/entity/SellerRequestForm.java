@@ -24,15 +24,17 @@ public class SellerRequestForm {
     private String introduce;
 
     @Column(nullable = false)
-    private boolean is_approval;
+    private boolean isApproval;
 
     public SellerRequestForm(User user, String introduce){
         this.user = user;
         this.introduce = introduce;
-        this.is_approval = false;
+        this.isApproval = false;
     }
 
     public void approve(){
-        this.is_approval = true;
+        this.isApproval = true;
     }
+
+    public void disapprove() { this.isApproval = false; }
 }
