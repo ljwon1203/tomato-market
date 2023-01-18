@@ -10,6 +10,6 @@ public interface SellerService {
     GetSellerRespDto getSeller(Long sellerId);
 
     List<GetSellerRespDto> getSellerList();
-
-    GetSellerRespDto getMyProductList(User user);
+    
+    void disapproveSellerAuth(Long sellerId);
 }

@@ -31,7 +31,6 @@ public class SellerServiceImpl implements SellerService{
         return new GetSellerRespDto(seller, products);
     }
 
-    //#17-1 판매자 목록 전체 조회
     @Override
     public List<GetSellerRespDto> getSellerList() {
         List<Seller> sellerList = sellerRepository.findAll();
@@ -47,19 +46,21 @@ public class SellerServiceImpl implements SellerService{
         }
         return getSellerRespDtos;
             //반환해준다
-
     }
-
-    //#19 (판매자) 나의 판매상품 조회
-    public GetSellerRespDto getMyProductList(User user) {
-        Seller seller = sellerRepository.findById(user.getId()).orElseThrow(
-                () -> new IllegalArgumentException("권한이 없습니다.")
+    
+    @Override
+    public void disapproveSellerAuth(Long sellerId) {
+        Seller seller = sellerRepository.findById(sellerId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
         );
-        // userId를 사용해서 sellerRepository에 등록되어 있는 값을 가져와 seller에 담아준다.
-        // seller가 아닐 경우 IllegalArgumentException 발생
 
-        List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
-        // sellerId를 사용해서 productRepository에 등록되어있는 product를 products에 담아준다.
-        return new GetSellerRespDto(seller, products);
+        // 셀러를 제거해준다.
+        seller.remove();
+
+        // 유저의 권한을 고객으로 변경한다.
+        seller.getUser().setRoleCustomer();
+
+        // 변경사항을 저장합니다.
+        sellerRepository.save(seller);
     }
 }
