@@ -15,6 +15,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    // 유저가 ID와 패스워드 입력시 메소드 실행.
+    // username의 정보를 db에서 검색, 없을경우 에러발생, 찾았을 경우 getAuthorities메소드 실행
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         User user = userRepository.findByUsername(username)
