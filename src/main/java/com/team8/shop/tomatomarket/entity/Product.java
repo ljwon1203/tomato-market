@@ -2,6 +2,8 @@ package com.team8.shop.tomatomarket.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -24,10 +26,17 @@ public class Product {
     private String desc;
 
     @Column
-    private String seller_nickname;
+    private String nickname;
 
-    @Column
-    private String category_name;
+    @JoinColumn(name = "seller_id", nullable = false)
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Seller seller;
+
+    @OneToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private ProductCategory productCategory;
 
 
 }

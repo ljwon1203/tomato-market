@@ -1,6 +1,8 @@
 package com.team8.shop.tomatomarket.dto;
 
 import com.team8.shop.tomatomarket.entity.Product;
+import com.team8.shop.tomatomarket.entity.ProductCategory;
+import com.team8.shop.tomatomarket.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,16 +16,16 @@ public class ProductResponseDto {
 
     private String  desc;
 
-    private String seller_nickname;
+    private User user ;
 
-    private String category_name;
+    private ProductCategory productCategory;
 
     public ProductResponseDto(Product product) {
         this.name = product.getName();
         this.price = product.getPrice();
         this.desc = product.getDesc();
-        this.seller_nickname = product.getSeller_nickname();
-        this.category_name = product.getCategory_name();
+        this.user = product.getUser();
+        this.productCategory = product.getProductCategory();
     }
 }
 

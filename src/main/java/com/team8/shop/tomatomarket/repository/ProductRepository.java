@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface ProductRepository {
     List<Product> findAllByOrderByModifiedAtDesc();
+    List<Product> findAllById(Long id);
 }
