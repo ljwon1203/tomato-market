@@ -21,6 +21,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(securedEnabled = true) // @Secured 어노테이션 활성화
 public class SpringSecurityConfig{
     private final JwtUtils jwtUtils;
+    private final String[] permitAllArray = {"/login","/signup"};
 
 
     @Bean
@@ -49,7 +50,5 @@ public class SpringSecurityConfig{
         return http.build();
     }
     
-    public static final String[] permitAllArray = new String[]{
-            "/login","/signup"};
 
 }
