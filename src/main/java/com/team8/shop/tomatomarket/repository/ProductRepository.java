@@ -10,5 +10,5 @@ public interface ProductRepository {
     List<Product> findAllByOrderByModifiedAtDesc();
     List<Product> findAllById(Long id);
 
-    List<Product> findAllBySellerId(Long id);
+    List<Product> findAllBySellerId(Long sellerId);
 }

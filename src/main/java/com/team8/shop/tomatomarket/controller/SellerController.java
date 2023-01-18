@@ -2,10 +2,11 @@ package com.team8.shop.tomatomarket.controller;
 
 import com.team8.shop.tomatomarket.dto.GetSellerRespDto;
 import com.team8.shop.tomatomarket.service.SellerService;
-import com.team8.shop.tomatomarket.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -27,10 +28,5 @@ public class SellerController {
         return sellerService.getSeller(sellerId);
     }
 
-    //#19 (판매자) 나의 판매상품 조회
-    @GetMapping("/{sellerId}/products")
-    public GetSellerRespDto getMyProductList(@AuthenticationPrincipal UserServiceImpl userServiceImpl) {
-        return sellerService.getMyProductList(userServiceImpl.getUser());
-    }
 
 }

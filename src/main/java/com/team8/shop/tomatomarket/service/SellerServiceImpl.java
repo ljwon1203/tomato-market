@@ -45,9 +45,7 @@ public class SellerServiceImpl implements SellerService{
             //seller와 product을 getSellerRespDtos에 담아준다.
         }
         return getSellerRespDtos;
-            //반환해준다
     }
-    
     @Override
     public void disapproveSellerAuth(Long sellerId) {
         Seller seller = sellerRepository.findById(sellerId).orElseThrow(
