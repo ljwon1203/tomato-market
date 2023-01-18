@@ -35,18 +35,21 @@ public class SpringSecurityConfig{
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().antMatchers("/signup","/login").permitAll()
-                                .antMatchers("/admin/**").hasRole("ADMIN")
+        http.authorizeRequests().antMatchers(permitAllArray).permitAll()
                                 .anyRequest().authenticated()
                                 .and().addFilterBefore(new JwtAuthFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
 
         http.formLogin().disable();
 
-        http.logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true);
+//        http.logout()
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//                .logoutSuccessUrl("/")
+//                .invalidateHttpSession(true);
 
         return http.build();
     }
+    
+    public static final String[] permitAllArray = new String[]{
+            "/login","/signup"};
+
 }
