@@ -17,7 +17,7 @@ public class GetSellerRespDto {
         this.id = seller.getId();
         this.nickname = seller.getUser().getNickname();
         this.introduce = seller.getIntroduce();
-        this.categories = products.stream().map(product -> product.getProductCategory().getName())
+        this.categories = products.stream().map(product -> product.getProductCategory().getName)
                                             .distinct()
                                             .collect(Collectors.toList());
     }

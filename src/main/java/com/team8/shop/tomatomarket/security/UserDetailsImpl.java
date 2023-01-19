@@ -69,5 +69,7 @@ public class UserDetailsImpl implements UserDetails {
         return false;
     }
 
+    // Id 확인용
+    public boolean isValidId(Long Id){return this.user.equals(Id);}
 
 }
