@@ -1,6 +1,7 @@
 package com.team8.shop.tomatomarket.service;
 
 import com.team8.shop.tomatomarket.dto.GetSellerRespDto;
+import com.team8.shop.tomatomarket.dto.ProductRequestDto;
 import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.Seller;
 import com.team8.shop.tomatomarket.entity.User;
@@ -60,5 +61,35 @@ public class SellerServiceImpl implements SellerService{
 
         // 변경사항을 저장합니다.
         sellerRepository.save(seller);
+    }
+
+
+    // #12 (판매자) 판매 상품 등록
+    @Override
+    public void createProduct(ProductRequestDto productRequestDto){
+        Product product = new Product(productRequestDto);
+        productRepository.save(product);
+    }
+
+
+    // #12 (판매자) 판매 상품 수정
+    @Override
+    public void updateProduct(Long productId, ProductRequestDto productRequestDto){
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new IllegalArgumentException("조회하신 상품이 존재하지 않습니다.")
+        );
+
+        product.updateProduct(productRequestDto);
+        productRepository.save(product);
+    }
+
+
+    @Override
+    public void deleteProduct(Long productId){
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new IllegalArgumentException("조회하신 상품이 존재하지 않습니다.")
+        );
+
+        productRepository.deleteById(productId);
     }
 }
