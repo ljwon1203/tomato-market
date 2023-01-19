@@ -16,6 +16,7 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
     //(고객) 프로필 설정
+    @Transactional
     @Override
     public UserResponseDto update(UserMyProfileDto userMyProfileDto){
         Long userId = userMyProfileDto.getId();
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService{
         if(userId == user.getId())
         {
             user.updateNickName(nickname);
+            userRepository.save(user);
             return new UserResponseDto(user);
         }
         throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
