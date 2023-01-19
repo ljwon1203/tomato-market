@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService{
         User user = _getUser(username);
 
         // 패스워드 검증
-        if(!passwordEncoder.matches(password, user.getPassword())){
+        if(!user.isValidPassword(password, passwordEncoder)){
             throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
         }
 
