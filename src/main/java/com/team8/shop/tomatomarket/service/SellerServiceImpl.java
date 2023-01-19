@@ -8,7 +8,6 @@ import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,18 +33,25 @@ public class SellerServiceImpl implements SellerService{
     @Override
     public List<GetSellerRespDto> getSellerList() {
         List<Seller> sellerList = sellerRepository.findAll();
-        // sellerPepository에 있는걸 가져와서 sellerList에 넣음 List
 
         List<GetSellerRespDto> getSellerRespDtos = new ArrayList<>();
-        // getsellerRespDtos ArrayList로 만든다.
         for (Seller seller : sellerList) {
             List<Product> products = productRepository.findAllById(seller.getId()).orElse(new ArrayList<>());
             getSellerRespDtos.add(new GetSellerRespDto(seller, products));
-            //sellerList에 있는 seller를 하나씩 꺼내서
-            //seller와 product을 getSellerRespDtos에 담아준다.
         }
         return getSellerRespDtos;
     }
+
+    //(판매자) 나의 판매상품 조회
+    @Override
+    public GetSellerRespDto getMyProductList(User user) {
+        Seller seller = sellerRepository.findById(user.getId()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다."));
+
+        List<Product>productList = productRepository.findAllByUserId(user.getId());
+        return new GetSellerRespDto(seller, productList);
+    }
+
     @Override
     public void disapproveSellerAuth(Long sellerId) {
         Seller seller = sellerRepository.findById(sellerId).orElseThrow(
