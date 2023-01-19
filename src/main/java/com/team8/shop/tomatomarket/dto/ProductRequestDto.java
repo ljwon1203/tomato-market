@@ -4,8 +4,10 @@ import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.ProductCategory;
 import com.team8.shop.tomatomarket.entity.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ProductRequestDto {
     private String name;
 
@@ -15,13 +17,4 @@ public class ProductRequestDto {
 
     private ProductCategory productCategory;
 
-    private User user;
-
-    public ProductRequestDto(Product product) {
-        this.name = product.getName();
-        this.price = product.getPrice();
-        this.desc = product.getDesc();
-        this.productCategory = product.getProductCategory();
-        this.user = product.getSeller().getUser();
-    }
 }
