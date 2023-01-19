@@ -2,6 +2,7 @@ package com.team8.shop.tomatomarket.service;
 
 import com.team8.shop.tomatomarket.dto.LoginReqDto;
 import com.team8.shop.tomatomarket.dto.LoginRespDto;
+import com.team8.shop.tomatomarket.dto.SignupReqDto;
 import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.UserRepository;
 import com.team8.shop.tomatomarket.util.jwt.JwtUtils;
@@ -36,5 +37,33 @@ public class UserServiceImpl implements UserService{
 
         // dto에 넣어서 반환
         return new LoginRespDto(jwtToken);
+    }
+
+    @Override
+    public void signup(SignupReqDto dto) {
+        String username = dto.getUsername();
+        String nickname = dto.getNickname();
+        String password = dto.getPassword();
+
+        // username 중복검증
+        boolean isExistUsername = userRepository.existsByUsername(username);
+        if(isExistUsername){
+            throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
+        }
+
+        // nickname 중복검증
+        boolean isExistNickname = userRepository.existsByNickname(nickname);
+        if(isExistNickname){
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        }
+
+        // 패스워드 암호화
+        String encodePassword = passwordEncoder.encode(password);
+
+        // 새로운 유저 생성
+        User user = new User(username,nickname,encodePassword);
+
+        // 저장
+        userRepository.save(user);
     }
 }

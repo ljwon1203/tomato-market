@@ -28,6 +28,11 @@ public class UserController {
     @PostMapping("/logout")
     public void logout(){}
 
+    @PostMapping("/signup")
+    public void signup(@RequestBody SignupReqDto reqDto){
+        userServiceImpl.signup(reqDto);
+    }
+
     @PostMapping("/auth/waitings")
     public void createSellerWaiting(@AuthenticationPrincipal UserDetails userDetails, @RequestBody SellerRequestDto dto){
         CreateDisapprovedSellerFormReqDto serviceRequestDto = new CreateDisapprovedSellerFormReqDto(userDetails.getUsername(), dto.getIntroduce());
