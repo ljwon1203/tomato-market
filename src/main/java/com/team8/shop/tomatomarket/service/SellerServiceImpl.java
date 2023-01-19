@@ -7,7 +7,6 @@ import com.team8.shop.tomatomarket.entity.Seller;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,6 +32,7 @@ public class SellerServiceImpl implements SellerService{
 
         return new GetSellerRespDto(seller, products);
     }
+
 
     @Override
     public List<GetSellerRespDto> getSellerList(PageableServiceReqDto dto) {

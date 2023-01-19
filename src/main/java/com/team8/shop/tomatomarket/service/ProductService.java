@@ -27,7 +27,6 @@ public class ProductService {
         List<Product> products = productRepository.findAllByOrderByModifiedAtDesc();
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
 
-
         for (Product product : products) {
             productResponseDtoList.add(new ProductResponseDto(product));
         }

@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
         String username = dto.getUsername();
         String password = dto.getPassword();
         // 유저 검증
-        User user = _getUser(userId);
+        User user = _getUser(username);
 
         // 패스워드 검증
         if(!passwordEncoder.matches(password, user.getPassword())){
@@ -73,13 +73,9 @@ public class UserServiceImpl implements UserService{
 
         User user = _getUser(userId);
 
-        if(userId.equals(user.getId()){
-            user.updateNickName(nickname);
-            userRepository.save(user);
-            return new UserResponseDto(user);
-        }
-        
-        throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+        user.updateNickName(nickname);
+        userRepository.save(user);
+        return new UserResponseDto(user);
     }
 
     //(고객) 프로필 조회
@@ -89,9 +85,16 @@ public class UserServiceImpl implements UserService{
         return new UserResponseDto(user);
     }
     
-    // 내부 사용 : 유저 검증 
+    // 내부 사용 : 유저 검증 by id
     private User _getUser(Long userId){
         return userRepository.findById(userId).orElseThrow(
                 ()->new IllegalArgumentException("사용자가 존재하지 않습니다."));
     }
+
+    // 내부 사용 : 유저 검증 by username
+    private User _getUser(String username){
+        return userRepository.findByUsername(username).orElseThrow(
+                ()->new IllegalArgumentException("사용자가 존재하지 않습니다."));
+    }
+
 }
