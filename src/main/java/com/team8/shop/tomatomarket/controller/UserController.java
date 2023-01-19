@@ -25,6 +25,9 @@ public class UserController {
         response.addHeader("Authorization", loginRespDto.getJwtToken());
     }
 
+    @PostMapping("/logout")
+    public void logout(){}
+
     @PostMapping("/auth/waitings")
     public void createSellerWaiting(@AuthenticationPrincipal UserDetails userDetails, @RequestBody SellerRequestDto dto){
         CreateDisapprovedSellerFormReqDto serviceRequestDto = new CreateDisapprovedSellerFormReqDto(userDetails.getUsername(), dto.getIntroduce());
