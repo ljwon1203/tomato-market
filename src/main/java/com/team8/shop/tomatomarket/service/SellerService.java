@@ -9,8 +9,6 @@ import java.util.List;
 public interface SellerService {
     GetSellerRespDto getSeller(Long sellerId);
 
-    List<GetSellerRespDto> getSellerList();
-
     GetSellerRespDto getMyProductList(Long userId);
     
     List<GetSellerRespDto>  getSellerList(PageableServiceReqDto dto);
