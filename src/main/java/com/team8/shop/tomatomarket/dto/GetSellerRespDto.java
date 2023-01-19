@@ -9,15 +9,15 @@ import java.util.stream.Collectors;
 @Getter
 public class GetSellerRespDto {
     private final Long id;
-    private final String nickname;
+    private final String username;
     private final String introduce;
     private final List<String> categories;
 
     public GetSellerRespDto(Seller seller, List<Product> products){
         this.id = seller.getId();
-        this.nickname = seller.getUser().getNickname();
+        this.username = seller.getUser().getUsername();
         this.introduce = seller.getIntroduce();
-        this.categories = products.stream().map(product -> product.getProductCategory().getName())
+        this.categories = products.stream().map(product -> product.getProductCategory().getName)
                                             .distinct()
                                             .collect(Collectors.toList());
     }

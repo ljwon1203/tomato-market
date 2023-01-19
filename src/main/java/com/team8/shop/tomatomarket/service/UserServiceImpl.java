@@ -1,31 +1,28 @@
 package com.team8.shop.tomatomarket.service;
 
-import com.team8.shop.tomatomarket.dto.LoginReqDto;
-import com.team8.shop.tomatomarket.dto.LoginRespDto;
-import com.team8.shop.tomatomarket.dto.SignupReqDto;
+import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.UserRepository;
 import com.team8.shop.tomatomarket.util.jwt.JwtUtils;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
-
     private final JwtUtils jwtUtils;
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public LoginRespDto login(LoginReqDto dto) {
         String username = dto.getUsername();
         String password = dto.getPassword();
         // 유저 검증
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 유저입니다.")
-        );
+        User user = _getUser(userId);
 
         // 패스워드 검증
         if(!passwordEncoder.matches(password, user.getPassword())){
@@ -65,5 +62,36 @@ public class UserServiceImpl implements UserService{
 
         // 저장
         userRepository.save(user);
+    }
+
+    //(고객) 프로필 설정
+    @Override
+    @Transactional
+    public UserResponseDto update(UserMyProfileDto userMyProfileDto){
+        Long userId = userMyProfileDto.getId();
+        String nickname = userMyProfileDto.getNickname();
+
+        User user = _getUser(userId);
+
+        if(userId.equals(user.getId()){
+            user.updateNickName(nickname);
+            userRepository.save(user);
+            return new UserResponseDto(user);
+        }
+        
+        throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+    }
+
+    //(고객) 프로필 조회
+    @Override
+    public UserResponseDto getProfile(Long userId){
+        User user = _getUser(userId);
+        return new UserResponseDto(user);
+    }
+    
+    // 내부 사용 : 유저 검증 
+    private User _getUser(Long userId){
+        return userRepository.findById(userId).orElseThrow(
+                ()->new IllegalArgumentException("사용자가 존재하지 않습니다."));
     }
 }
