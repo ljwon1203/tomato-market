@@ -34,24 +34,22 @@ public class Product {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Seller seller;
 
-    @OneToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private ProductCategory productCategory;
 
 
-    public Product(ProductRequestDto productRequestDto){
-        this.name = productRequestDto.getName();
-        this.price = productRequestDto.getPrice();
-        this.desc = productRequestDto.getDesc();
-        this.productCategory = productRequestDto.getProductCategory();
+
+    public Product(String name, int price, String desc, ProductCategory productCategory){
+        this.name = name;
+        this.price = price;
+        this.desc = desc;
+        this.productCategory = productCategory;
+
     }
 
-    public void updateProduct(ProductRequestDto productRequestDto){
-        this.name = productRequestDto.getName();
-        this.price = productRequestDto.getPrice();
-        this.desc = productRequestDto.getDesc();
-        this.productCategory = productRequestDto.getProductCategory();
+    public void updateProduct(String name, int price, String desc, ProductCategory productCategory){
+        this.name = name;
+        this.price = price;
+        this.desc = desc;
+        this.productCategory = productCategory;
     }
 
 }
