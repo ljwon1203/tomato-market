@@ -1,6 +1,7 @@
 package com.team8.shop.tomatomarket.entity;
 
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -41,8 +42,8 @@ public class User {
     }
 
     // 패스워드 검증용
-    public boolean isValidPassword(String password){
-        return this.password.equals(password);
+    public boolean isValidPassword(String password, PasswordEncoder encoder){
+        return encoder.matches(password,this.password);
     }
 
     //닉네임 업데이트
