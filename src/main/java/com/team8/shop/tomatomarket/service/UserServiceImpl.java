@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService{
 
         User user = _getUser(userId);
 
-        if(userId.equals(user.getId()){
+        if(userId.equals(user.getId())){
             user.updateNickName(nickname);
             userRepository.save(user);
             return new UserResponseDto(user);
