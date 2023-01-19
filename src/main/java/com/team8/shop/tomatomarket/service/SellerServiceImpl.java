@@ -59,6 +59,17 @@ public class SellerServiceImpl implements SellerService{
         }
         return getSellerRespDtos;
     }
+
+    //(판매자) 나의 판매상품 조회
+    @Override
+    public GetSellerRespDto getMyProductList(Long userId) {
+        Seller seller = sellerRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다."));
+
+        List<Product>productList = productRepository.findAllByUserId(userId);
+        return new GetSellerRespDto(seller, productList);
+    }
+
     @Override
     public void disapproveSellerAuth(Long sellerId) {
         Seller seller = sellerRepository.findById(sellerId).orElseThrow(
