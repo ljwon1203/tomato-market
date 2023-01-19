@@ -67,7 +67,10 @@ public class SellerServiceImpl implements SellerService{
     // #12 (판매자) 판매 상품 등록
     @Override
     public void createProduct(ProductRequestDto productRequestDto){
-        Product product = new Product(productRequestDto);
+        Product product = new Product(productRequestDto.getName(),
+                                      productRequestDto.getPrice(),
+                                      productRequestDto.getDesc(),
+                                      productRequestDto.getProductCategory());
         productRepository.save(product);
     }
 
@@ -75,21 +78,26 @@ public class SellerServiceImpl implements SellerService{
     // #12 (판매자) 판매 상품 수정
     @Override
     public void updateProduct(Long productId, ProductRequestDto productRequestDto){
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new IllegalArgumentException("조회하신 상품이 존재하지 않습니다.")
-        );
-
-        product.updateProduct(productRequestDto);
+        Product product = _getProduct(productId);
+        product.updateProduct(productRequestDto.getName(),
+                              productRequestDto.getPrice(),
+                              productRequestDto.getDesc(),
+                              productRequestDto.getProductCategory());
         productRepository.save(product);
     }
 
 
     @Override
     public void deleteProduct(Long productId){
+        Product product = _getProduct(productId);
+        productRepository.delete(product);
+    }
+
+
+    private Product _getProduct(Long productId){
         Product product = productRepository.findById(productId).orElseThrow(
                 () -> new IllegalArgumentException("조회하신 상품이 존재하지 않습니다.")
         );
-
-        productRepository.deleteById(productId);
+        return product;
     }
 }
