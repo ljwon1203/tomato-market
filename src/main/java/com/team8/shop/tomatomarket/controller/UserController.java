@@ -42,7 +42,7 @@ public class UserController {
     public UserResponseDto setProfile(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if(userDetails.isValidId(userId)){
             UserMyProfileDto userMyProfileDto = new UserMyProfileDto(userDetails.getUserId(),userRequestDto.getNickname());
-            return userService.update(userMyProfileDto);
+            return userServiceImpl.update(userMyProfileDto);
         }
         else {throw new IllegalArgumentException("프로필 작성자와 일치하지 않습니다.");}
     }
@@ -51,6 +51,6 @@ public class UserController {
     @GetMapping("/users/{userId}")
     public UserResponseDto getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails){
         Long userId = userDetails.getUserId();
-        return userService.getProfile(userId);
+        return userServiceImpl.getProfile(userId);
     }
 }
