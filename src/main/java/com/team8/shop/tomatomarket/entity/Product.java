@@ -1,5 +1,6 @@
 package com.team8.shop.tomatomarket.entity;
 
+import com.team8.shop.tomatomarket.dto.ProductRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -38,5 +39,19 @@ public class Product {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ProductCategory productCategory;
 
+
+    public Product(ProductRequestDto productRequestDto){
+        this.name = productRequestDto.getName();
+        this.price = productRequestDto.getPrice();
+        this.desc = productRequestDto.getDesc();
+        this.productCategory = productRequestDto.getProductCategory();
+    }
+
+    public void updateProduct(ProductRequestDto productRequestDto){
+        this.name = productRequestDto.getName();
+        this.price = productRequestDto.getPrice();
+        this.desc = productRequestDto.getDesc();
+        this.productCategory = productRequestDto.getProductCategory();
+    }
 
 }
