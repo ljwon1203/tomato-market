@@ -1,7 +1,9 @@
 package com.team8.shop.tomatomarket.dto;
 
 import com.team8.shop.tomatomarket.entity.User;
+import lombok.Getter;
 
+@Getter
 public class UserResponseDto {
     private final Long Id;
     private final String username;

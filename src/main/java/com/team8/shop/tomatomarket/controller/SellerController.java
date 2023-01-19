@@ -37,16 +37,16 @@ public class SellerController {
     // (판매자)나의 판매상품 조회
     @GetMapping("/sellers/{sellerId}/products")
     public GetSellerRespDto getMyProductList(@PathVariable Long sellerId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Long checkSellerId = sellerService.getSeller(sellerId).getId();
-        Long checkUserId = userDetails.getUserId();
+        // 유저 아이디를 가져옵니다.
+        Long checkSellerUserId = sellerService.getSeller(sellerId).getUser().getId();
 
-        if (checkSellerId.equals(checkUserId)) {
-            Long userId = userDetails.getUserId();
-            // 일치한다면 로그인한 userId를 user에 담아준다.
-            return sellerService.getMyProductList(userId);
-            // getMyProductList에서 user에 해당하는 productList를 반환해 준다
-        } else {
+        if (!userDetails.isValidId(checkSellerUserId)) {
             throw new IllegalArgumentException("등록된 정보와 일치하지 않습니다.");
         }
+
+        // 일치한다면 로그인한 userId를 user에 담아준다.
+        Long userId = userDetails.getUserId();
+        // getMyProductList에서 user에 해당하는 productList를 반환해 준다
+        return sellerService.getMyProductList(userId);
     }
 }
