@@ -7,9 +7,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserMyProfileDto {
 
-    private final String username;
+    private  Long Id;
 
-    private final String nickName;
+    private  String nickname;
 
 
+
+    public UserMyProfileDto(Long userId, String nickname){
+        this.Id = userId;
+        this.nickname = nickname;
+    }
 }

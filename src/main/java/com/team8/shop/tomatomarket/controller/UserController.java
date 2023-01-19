@@ -25,16 +25,17 @@ public class UserController {
         sellerRequestFormService.createDisapprovedForm(serviceRequestDto);
     }
 
+    //(고객)프로필 설정
     @PatchMapping("/users/{userId}")
     public UserResponseDto setProfile(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if(userDetails.getUser().getId().equals(userId)){
-            UserMyProfileDto userMyProfileDto = new UserMyProfileDto(userDetails.getUsername(),userRequestDto.getNickname());
+        if(userDetails.isValidId(userId)){
+            UserMyProfileDto userMyProfileDto = new UserMyProfileDto(userDetails.getUserId(),userRequestDto.getNickname());
             return userService.update(userMyProfileDto);
         }
-        else {throw new IllegalArgumentException();}
+        else {throw new IllegalArgumentException("프로필 작성자와 일치하지 않습니다.");}
     }
 
-
+    //(고객)프로필 조회
     @GetMapping("/users/{userId}")
     public UserResponseDto getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return userService.getProfile(userDetails.getUser());
