@@ -73,13 +73,9 @@ public class UserServiceImpl implements UserService{
 
         User user = _getUser(userId);
 
-        if(userId.equals(user.getId())){
-            user.updateNickName(nickname);
-            userRepository.save(user);
-            return new UserResponseDto(user);
-        }
-        
-        throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+        user.updateNickName(nickname);
+        userRepository.save(user);
+        return new UserResponseDto(user);
     }
 
     //(고객) 프로필 조회

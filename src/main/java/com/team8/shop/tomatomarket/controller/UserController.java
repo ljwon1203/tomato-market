@@ -40,11 +40,12 @@ public class UserController {
     //(고객)프로필 설정
     @PatchMapping("/users/{userId}")
     public UserResponseDto setProfile(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if(userDetails.isValidId(userId)){
-            UserMyProfileDto userMyProfileDto = new UserMyProfileDto(userDetails.getUserId(),userRequestDto.getNickname());
-            return userServiceImpl.update(userMyProfileDto);
+        if(!userDetails.isValidId(userId)){
+            throw new IllegalArgumentException("프로필 작성자와 일치하지 않습니다.");
         }
-        else {throw new IllegalArgumentException("프로필 작성자와 일치하지 않습니다.");}
+
+        UserMyProfileDto userMyProfileDto = new UserMyProfileDto(userDetails.getUserId(),userRequestDto.getNickname());
+        return userServiceImpl.update(userMyProfileDto);
     }
 
     //(고객)프로필 조회
