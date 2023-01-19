@@ -45,7 +45,7 @@ public class User {
         return this.password.equals(password);
     }
 
-    // 닉네임 업데이트
+    //닉네임 업데이트
     public void updateNickName(String nickname){
         this.nickname = nickname;
     }
@@ -59,4 +59,6 @@ public class User {
     public void setRoleSeller(){
         this.role = UserRoleEnum.SELLER;
     }
+
+
 }

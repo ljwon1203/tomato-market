@@ -19,8 +19,9 @@ public class AdminController {
 
     @GetMapping("/sellers")
     @Secured(UserRoleEnum.Authority.ADMIN)
-    public List<GetSellerRespDto> getSellers(){
-        return sellerService.getSellerList();
+    public List<GetSellerRespDto> getSellers(int page, int size){
+        PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
+        return sellerService.getSellerList(serviceReqDto);
     }
 
     @PatchMapping("/sellers/{sellerId}")
