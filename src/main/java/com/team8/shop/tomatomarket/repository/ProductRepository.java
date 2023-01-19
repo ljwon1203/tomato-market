@@ -10,6 +10,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByOrderByModifiedAtDesc();
     List<Product> findAllById(Long id);
-
+    List<Product> findAllByUserId(Long userid);
     List<Product> findAllBySellerId(Long sellerId);
 }

@@ -6,6 +6,8 @@ import com.team8.shop.tomatomarket.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class ProductResponseDto {
@@ -14,18 +16,18 @@ public class ProductResponseDto {
 
     private int price;
 
-    private String  desc;
+    private String desc;
 
-    private User user ;
+    private String username;
 
-    private ProductCategory productCategory;
+    private String category;
 
     public ProductResponseDto(Product product) {
         this.name = product.getName();
         this.price = product.getPrice();
         this.desc = product.getDesc();
-        this.user = product.getUser();
-        this.productCategory = product.getProductCategory();
+        this.username = product.getSeller().getUser().getUsername();
+        this.category = product.getProductCategory().getName();
     }
 }
 

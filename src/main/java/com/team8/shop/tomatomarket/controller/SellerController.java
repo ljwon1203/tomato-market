@@ -1,34 +1,44 @@
 package com.team8.shop.tomatomarket.controller;
 
-import com.team8.shop.tomatomarket.dto.GetSellerRespDto;
-import com.team8.shop.tomatomarket.dto.ProductRequestDto;
-import com.team8.shop.tomatomarket.security.UserDetailsImpl;
+import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.service.SellerService;
+import com.team8.shop.tomatomarket.security.UserDetailsImpl;
+import com.team8.shop.tomatomarket.repository.SellerRepository;
+import com.team8.shop.tomatomarket.entity.User;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/sellers")
 public class SellerController {
     private final SellerService sellerService;
+    private final SellerRepository sellerRepository;
 
-    //#17-1 판매자 목록 전체 조회
-    @GetMapping("")
-    public List<GetSellerRespDto> getSellerList(){
-        return sellerService.getSellerList();
+    // 판매자 전체목록 조회
+    @GetMapping("/sellers")
+    public List<GetSellerRespDto> getSellerList(int page, int size){
+        PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
+        return sellerService.getSellerList(serviceReqDto);
     }
 
-    //#17-2 판매자 정보 조회
-    @GetMapping("/{sellerId}")
+    // 판매자 정보 조회
+    @GetMapping("/sellers/{sellerId}")
     public GetSellerRespDto getSeller(@PathVariable Long sellerId){
         return sellerService.getSeller(sellerId);
     }
 
+    // (판매자)나의 판매상품 조회
+    @GetMapping("/sellers/{sellerId}/products")
+    public GetSellerRespDto getMyProductList(@PathVariable Long sellerId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        _
+        Long userId = userDetails.getUserId();
+        // getMyProductList에서 user에 해당하는 productList를 반환해 준다
+        return sellerService.getMyProductList(userId);
+       
     // #12 (판매자)판매 상품 등록
     @PostMapping("/sellers/{sellerId}/products")
     public void createProduct(@PathVariable Long sellerId,
@@ -65,5 +75,6 @@ public class SellerController {
         if(!userDetails.isValidId(checkSellerUserId)){
             throw new IllegalArgumentException("등록된 정보와 일치하지 않습니다.");
         }
+
     }
 }
