@@ -22,8 +22,8 @@ public class UserController {
     @PostMapping("/login")
     public void login(@RequestBody LoginReqDto reqDto, HttpServletResponse response){
         LoginRespDto loginRespDto = userServiceImpl.login(reqDto);
+        response.addHeader("Authorization", loginRespDto.getJwtToken());
     }
-
 
     @PostMapping("/auth/waitings")
     public void createSellerWaiting(@AuthenticationPrincipal UserDetails userDetails, @RequestBody SellerRequestDto dto){
