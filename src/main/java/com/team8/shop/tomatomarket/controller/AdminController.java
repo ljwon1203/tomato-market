@@ -14,30 +14,31 @@ import java.util.List;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
-    private final SellerServiceImpl sellerService;
-    private final SellerRequestFormServiceImpl sellerRequestFormService;
+    private final SellerServiceImpl sellerServiceImpl;
+    private final SellerRequestFormServiceImpl sellerRequestFormServiceImpl;
 
     @GetMapping("/sellers")
     @Secured(UserRoleEnum.Authority.ADMIN)
-    public List<GetSellerRespDto> getSellers(){
-        return sellerService.getSellerList();
+    public List<GetSellerRespDto> getSellers(int page, int size){
+        PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
+        return sellerServiceImpl.getSellerList(serviceReqDto);
     }
 
     @PatchMapping("/sellers/{sellerId}")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public void disapproveSellerAuth(@PathVariable Long sellerId){
-        sellerService.disapproveSellerAuth(sellerId);
+        sellerServiceImpl.disapproveSellerAuth(sellerId);
     }
 
     @GetMapping("/auth/waitings")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public List<GetSellerWaitingsRespDto> getSellerWaitings(){
-        return sellerRequestFormService.getSellerWaitings();
+        return sellerRequestFormServiceImpl.getSellerWaitings();
     }
 
     @PatchMapping("/auth/waiting/{waitingId}")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public void approveSellerAuth(@PathVariable Long waitingId){
-        sellerRequestFormService.approveSellerAuth(waitingId);
+        sellerRequestFormServiceImpl.approveSellerAuth(waitingId);
     }
 }
