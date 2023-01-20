@@ -1,7 +1,6 @@
 package com.team8.shop.tomatomarket.service;
 
 import com.team8.shop.tomatomarket.dto.*;
-import com.team8.shop.tomatomarket.entity.User;
 
 import java.util.List;
 
