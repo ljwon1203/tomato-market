@@ -43,7 +43,8 @@ public class SellerController {
                               @RequestBody ProductRequestDto productRequestDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails){
         _checkId(sellerId, userDetails);
-        sellerServiceImpl.createProduct(productRequestDto);
+        CreateProductReqDto dto = new CreateProductReqDto(sellerId, productRequestDto.getName(), productRequestDto.getPrice(), productRequestDto.getDescription(), productRequestDto.getProductCategory());
+        sellerServiceImpl.createProduct(dto);
     }
 
     // #12 (판매자)판매 상품 수정
@@ -88,19 +89,19 @@ public class SellerController {
     //(판매자) 프로필 설정
     @PatchMapping("/sellers/{sellerId}")
     public GetSellerRespDto setSellerProfile(@PathVariable Long sellerId, @RequestBody GetSellerReqDto getSellerReqDto , @AuthenticationPrincipal UserDetailsImpl userDetails){
-        Long checkSellerUserId = sellerService.getSeller(sellerId).getUser().getId();
+        Long checkSellerUserId = sellerServiceImpl.getSeller(sellerId).getUser().getId();
         if(!userDetails.isValidId(checkSellerUserId)){
             throw new IllegalArgumentException("프로필 작성자와 일치하지 않습니다.");
         }
         SellerServiceDto sellerServiceDto = new SellerServiceDto(userDetails.getUserId(), getSellerReqDto.getIntroduce());
-        return sellerService.sellerUpdate(sellerServiceDto);
+        return sellerServiceImpl.sellerUpdate(sellerServiceDto);
     }
-}
 
- // 내부 함수 : {sellerId}와 로그인한 유저가 같은 사람인지 검증
+    // 내부 함수 : {sellerId}와 로그인한 유저가 같은 사람인지 검증
     private void _checkId(Long sellerId, UserDetailsImpl userDetails){
         Long checkSellerUserId = sellerServiceImpl.getSeller(sellerId).getUser().getId();
         if(!userDetails.isValidId(checkSellerUserId)){
             throw new IllegalArgumentException("등록된 정보와 일치하지 않습니다.");
         }
     }
+}

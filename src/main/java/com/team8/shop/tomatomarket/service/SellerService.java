@@ -15,7 +15,7 @@ public interface SellerService {
     
     GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto);
 
-    void createProduct(ProductRequestDto productRequestDto);
+    void createProduct(CreateProductReqDto dto);
 
     void updateProduct(Long productId, ProductRequestDto productRequestDto);
 

@@ -30,7 +30,7 @@ public class ProductService {
     //#14 전체 판매상품 목록 조회
     @Transactional
     public List<ProductResponseDto> getProductList() {
-        List<Product> products = productRepository.findAllByOrderByModifiedAtDesc();
+        List<Product> products = productRepository.findAll();
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
 
         for (Product product : products) {

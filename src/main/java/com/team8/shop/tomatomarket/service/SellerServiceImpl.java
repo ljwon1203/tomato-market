@@ -4,11 +4,9 @@ import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.entity.CustomerRequestForm;
 import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.Seller;
-import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.CustomerRequestFormRepository;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
-import com.team8.shop.tomatomarket.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +31,7 @@ public class SellerServiceImpl implements SellerService {
                 () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
         );
 
-        List<Product> products = productRepository.findAllById(seller.getId());
+        List<Product> products = productRepository.findAllById(seller.getId()).orElse(new ArrayList<>());
 
         return new GetSellerRespDto(seller, products);
     }
@@ -58,7 +56,7 @@ public class SellerServiceImpl implements SellerService {
 
         for (Seller seller : sellerList) {
             //sellerList에 있는 seller를 하나씩 꺼내서
-            List<Product> products = productRepository.findAllById(seller.getId());
+            List<Product> products = productRepository.findAllById(seller.getId()).orElse(new ArrayList<>());
             //seller와 product을 getSellerRespDtos에 담아준다.
             getSellerRespDtos.add(new GetSellerRespDto(seller, products));
         }
@@ -71,7 +69,8 @@ public class SellerServiceImpl implements SellerService {
         Seller seller = sellerRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 판매자 입니다."));
 
-        List<Product> productList = productRepository.findAllByUserId(userId);
+        List<Product> productList = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
+
         return new GetSellerRespDto(seller, productList);
     }
 
@@ -95,7 +94,7 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto) {
         String introduce = sellerServiceDto.getIntroduce();
-        List<Product> products = productRepository.findAllById(sellerServiceDto.getSellerId());
+        List<Product> products = productRepository.findAllById(sellerServiceDto.getSellerId()).orElse(new ArrayList<>());
 
         Seller seller = _getSeller(sellerServiceDto.getSellerId());
 
@@ -106,11 +105,14 @@ public class SellerServiceImpl implements SellerService {
 
     // #12 (판매자) 판매 상품 등록
     @Override
-    public void createProduct(ProductRequestDto productRequestDto){
-        Product product = new Product(productRequestDto.getName(),
-                                      productRequestDto.getPrice(),
-                                      productRequestDto.getDesc(),
-                                      productRequestDto.getProductCategory());
+    public void createProduct(CreateProductReqDto dto){
+        Seller seller = sellerRepository.findById(dto.getSellerId()).get();
+
+        Product product = new Product(dto.getName(),
+                dto.getPrice(),
+                dto.getDescription(),
+                seller,
+                dto.getProductCategory());
         productRepository.save(product);
     }
 
@@ -120,7 +122,7 @@ public class SellerServiceImpl implements SellerService {
         Product product = _getProduct(productId);
         product.updateProduct(productRequestDto.getName(),
                               productRequestDto.getPrice(),
-                              productRequestDto.getDesc(),
+                              productRequestDto.getDescription(),
                               productRequestDto.getProductCategory());
         productRepository.save(product);
     }

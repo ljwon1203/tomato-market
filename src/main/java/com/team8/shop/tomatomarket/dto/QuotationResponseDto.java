@@ -12,6 +12,6 @@ public class QuotationResponseDto {
     public QuotationResponseDto(CustomerRequestForm customerRequestForm){
         this.product = new ProductResponseDto(customerRequestForm.getProduct());
         this.user = new UserResponseDto(customerRequestForm.getUser());
-        this.isApproval = customerRequestForm.getIsApproval();
+        this.isApproval = customerRequestForm.isApproval();
     }
 }

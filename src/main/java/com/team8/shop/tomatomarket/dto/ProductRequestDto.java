@@ -11,7 +11,7 @@ public class ProductRequestDto {
 
     private int price;
 
-    private String desc;
+    private String description;
 
     private ProductCategoryEnum productCategory;
 
