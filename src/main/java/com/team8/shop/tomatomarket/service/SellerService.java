@@ -12,6 +12,8 @@ public interface SellerService {
     List<GetSellerRespDto>  getSellerList(PageableServiceReqDto dto);
 
     void disapproveSellerAuth(Long sellerId);
+    
+    GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto);
 
     void createProduct(ProductRequestDto productRequestDto);
 
