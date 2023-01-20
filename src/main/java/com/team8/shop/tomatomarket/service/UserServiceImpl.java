@@ -6,9 +6,15 @@ import com.team8.shop.tomatomarket.repository.UserRepository;
 import com.team8.shop.tomatomarket.util.jwt.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +31,7 @@ public class UserServiceImpl implements UserService{
         User user = _getUser(username);
 
         // 패스워드 검증
-        if(!passwordEncoder.matches(password, user.getPassword())){
+        if(!user.isValidPassword(password, passwordEncoder)){
             throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
         }
 
@@ -84,7 +90,7 @@ public class UserServiceImpl implements UserService{
         User user = _getUser(userId);
         return new UserResponseDto(user);
     }
-    
+
     // 내부 사용 : 유저 검증 by id
     private User _getUser(Long userId){
         return userRepository.findById(userId).orElseThrow(
@@ -97,4 +103,24 @@ public class UserServiceImpl implements UserService{
                 ()->new IllegalArgumentException("사용자가 존재하지 않습니다."));
     }
 
+    @Override
+    public List<UserResponseDto> getUserList(PageableServiceReqDto dto) {
+        int page = dto.getPage();
+        int size = dto.getSize();
+        String sortBy = dto.getSortBy();
+        boolean isAsc = dto.isAsc();
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        List<User> userList = userRepository.findAll(pageable).toList();
+
+        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+
+        for (User user : userList) {
+            userResponseDtos.add(new UserResponseDto(user));
+        }
+        return userResponseDtos;
+    }
 }

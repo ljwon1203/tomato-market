@@ -1,5 +1,6 @@
 package com.team8.shop.tomatomarket.entity;
 
+import com.team8.shop.tomatomarket.dto.ProductRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -33,10 +34,23 @@ public class Product {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Seller seller;
 
-    @OneToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private ProductCategory productCategory;
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private ProductCategoryEnum productCategory;
 
+
+    public Product(String name, int price, String desc, ProductCategoryEnum productCategory){
+        this.name = name;
+        this.price = price;
+        this.desc = desc;
+        this.productCategory = productCategory;
+    }
+
+    public void updateProduct(String name, int price, String desc, ProductCategoryEnum productCategory){
+        this.name = name;
+        this.price = price;
+        this.desc = desc;
+        this.productCategory = productCategory;
+    }
 
 }

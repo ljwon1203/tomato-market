@@ -22,7 +22,6 @@ public class SellerServiceImpl implements SellerService {
     private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;
 
-
     //#17-2 판매자 정보 조회
     @Override
     public GetSellerRespDto getSeller(Long sellerId) {
@@ -34,7 +33,6 @@ public class SellerServiceImpl implements SellerService {
 
         return new GetSellerRespDto(seller, products);
     }
-
 
     @Override
     public List<GetSellerRespDto> getSellerList(PageableServiceReqDto dto) {
@@ -102,12 +100,43 @@ public class SellerServiceImpl implements SellerService {
 
     }
 
-
     // 내부 사용: 판매자 검증 by id
     private Seller _getSeller(Long sellerId) {
         return sellerRepository.findById(sellerId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
         );
 
+    // #12 (판매자) 판매 상품 등록
+    @Override
+    public void createProduct(ProductRequestDto productRequestDto){
+        Product product = new Product(productRequestDto.getName(),
+                                      productRequestDto.getPrice(),
+                                      productRequestDto.getDesc(),
+                                      productRequestDto.getProductCategory());
+        productRepository.save(product);
+    }
+
+    // #12 (판매자) 판매 상품 수정
+    @Override
+    public void updateProduct(Long productId, ProductRequestDto productRequestDto){
+        Product product = _getProduct(productId);
+        product.updateProduct(productRequestDto.getName(),
+                              productRequestDto.getPrice(),
+                              productRequestDto.getDesc(),
+                              productRequestDto.getProductCategory());
+        productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProduct(Long productId){
+        Product product = _getProduct(productId);
+        productRepository.delete(product);
+    }
+
+    private Product _getProduct(Long productId){
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new IllegalArgumentException("조회하신 상품이 존재하지 않습니다.")
+        );
+        return product;
     }
 }
