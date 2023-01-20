@@ -16,13 +16,13 @@ import java.util.List;
 public class AdminController {
     private final SellerServiceImpl sellerServiceImpl;
     private final SellerRequestFormServiceImpl sellerRequestFormServiceImpl;
-    private final AdminServiceImpl adminServiceImpl;
+    private final UserServiceImpl userServiceImpl;
 
     @GetMapping("/users")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public List<UserResponseDto> getUserList(int page, int size){
         PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
-        return adminServiceImpl.getUserList(serviceReqDto);
+        return userServiceImpl.getUserList(serviceReqDto);
     }
 
     @GetMapping("/sellers")
