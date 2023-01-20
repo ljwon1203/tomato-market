@@ -5,7 +5,6 @@ import com.team8.shop.tomatomarket.entity.CustomerRequestForm;
 import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.Seller;
 import com.team8.shop.tomatomarket.entity.User;
-
 import com.team8.shop.tomatomarket.repository.CustomerRequestFormRepository;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;

@@ -1,10 +1,12 @@
 package com.team8.shop.tomatomarket.controller;
 
 import com.team8.shop.tomatomarket.dto.ProductResponseDto;
+import com.team8.shop.tomatomarket.dto.UserBuyProductsReqDto;
+import com.team8.shop.tomatomarket.security.UserDetailsImpl;
 import com.team8.shop.tomatomarket.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +21,12 @@ public class ProductController {
     @GetMapping("/products")
     public List<ProductResponseDto> getProductList() {
         return productService.getProductList();
+    }
 
+    //#15 (고객) 상품 구매 요청
+    @PostMapping("/products/{productId}/quotations")
+    public void BuyRequest(@PathVariable Long productIdId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        UserBuyProductsReqDto userBuyProductsReqDto = new UserBuyProductsReqDto(productIdId, userDetails.getUserId());
+        productService.postBuyRequest(userBuyProductsReqDto);
     }
 }
