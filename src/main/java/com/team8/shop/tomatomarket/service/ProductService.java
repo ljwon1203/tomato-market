@@ -9,6 +9,7 @@ import com.team8.shop.tomatomarket.repository.CustomerRequestFormRepository;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRequestFormRepository;
 import com.team8.shop.tomatomarket.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +27,9 @@ public class ProductService {
     private final CustomerRequestFormRepository customerRequestFormRepository;
     private final SellerRequestFormRepository sellerRequestFormRepository;
 
-
     //#14 전체 판매상품 목록 조회
     @Transactional
     public List<ProductResponseDto> getProductList() {
-
         List<Product> products = productRepository.findAllByOrderByModifiedAtDesc();
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
 
@@ -62,5 +61,4 @@ public class ProductService {
         }
         customerRequestFormRepository.save(instance);
     }
-
 }
