@@ -20,4 +20,8 @@ public interface SellerService {
     void updateProduct(Long productId, ProductRequestDto productRequestDto);
 
     void deleteProduct(Long productId);
+
+    List<QuotationResponseDto> getQuotation(PageableServiceReqDto dto);
+
+    void approveQuotation(Long requestId);
 }

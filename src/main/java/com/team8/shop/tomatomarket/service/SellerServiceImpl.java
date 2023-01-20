@@ -1,12 +1,16 @@
 package com.team8.shop.tomatomarket.service;
 
 import com.team8.shop.tomatomarket.dto.*;
+import com.team8.shop.tomatomarket.entity.CustomerRequestForm;
 import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.Seller;
 import com.team8.shop.tomatomarket.entity.User;
+
+import com.team8.shop.tomatomarket.repository.CustomerRequestFormRepository;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
 import com.team8.shop.tomatomarket.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +25,7 @@ import java.util.List;
 public class SellerServiceImpl implements SellerService {
     private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;
+    private final CustomerRequestFormRepository customerRequestFormRepository;
 
     //#17-2 판매자 정보 조회
     @Override
@@ -34,6 +39,7 @@ public class SellerServiceImpl implements SellerService {
         return new GetSellerRespDto(seller, products);
     }
 
+    // 판매자 정보 조회
     @Override
     public List<GetSellerRespDto> getSellerList(PageableServiceReqDto dto) {
         int page = dto.getPage();
@@ -97,14 +103,7 @@ public class SellerServiceImpl implements SellerService {
         seller.updateIntroduce(introduce);
         sellerRepository.save(seller);
         return new GetSellerRespDto(seller, products);
-
     }
-
-    // 내부 사용: 판매자 검증 by id
-    private Seller _getSeller(Long sellerId) {
-        return sellerRepository.findById(sellerId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
-        );
 
     // #12 (판매자) 판매 상품 등록
     @Override
@@ -127,16 +126,56 @@ public class SellerServiceImpl implements SellerService {
         productRepository.save(product);
     }
 
+    // (판매자) 등록 물품 삭제
     @Override
     public void deleteProduct(Long productId){
         Product product = _getProduct(productId);
         productRepository.delete(product);
     }
 
+    // (판매자) 고객 구매 요청 목록 조회
+    @Override
+    public List<QuotationResponseDto> getQuotation(PageableServiceReqDto dto) {
+        int page = dto.getPage();
+        int size = dto.getSize();
+        String sortBy = dto.getSortBy();
+        boolean isAsc = dto.isAsc();
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        List<CustomerRequestForm> customerRequestFormList = customerRequestFormRepository.findAll(pageable).toList();
+        List<QuotationResponseDto> quotationResponseDtoList = new ArrayList<>();
+
+        for(CustomerRequestForm customerRequestForm : customerRequestFormList){
+            quotationResponseDtoList.add(new QuotationResponseDto(customerRequestForm));
+        }
+        return quotationResponseDtoList;
+    }
+
+    // (판매자) 고객 구매 요청 승인
+    @Override
+    public void approveQuotation(Long requestId){
+        CustomerRequestForm customerrequestForm = customerRequestFormRepository.findById(requestId).orElseThrow(
+                () -> new IllegalArgumentException("해당 요청이 존재하지 않습니다."));
+
+        customerrequestForm.approve();
+        customerRequestFormRepository.save(customerrequestForm);
+    }
+
+    // 내부 함수 : product 검증 및 불러오기 기능
     private Product _getProduct(Long productId){
         Product product = productRepository.findById(productId).orElseThrow(
                 () -> new IllegalArgumentException("조회하신 상품이 존재하지 않습니다.")
         );
         return product;
+    }
+    
+    // 내부 사용: 판매자 검증 by id
+    private Seller _getSeller(Long sellerId) {
+        return sellerRepository.findById(sellerId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
+        );
     }
 }
