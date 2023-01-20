@@ -118,7 +118,7 @@ public class SellerServiceImpl implements SellerService{
 
     // (판매자) 고객 구매 요청 목록 조회
     @Override
-    public List<QuatationResponseDto> getQuatation(PageableServiceReqDto dto) {
+    public List<QuotationResponseDto> getQuotation(PageableServiceReqDto dto) {
         int page = dto.getPage();
         int size = dto.getSize();
         String sortBy = dto.getSortBy();
@@ -129,12 +129,12 @@ public class SellerServiceImpl implements SellerService{
         Pageable pageable = PageRequest.of(page, size, sort);
 
         List<CustomerRequestForm> customerRequestFormList = customerRequestFormRepository.findAll(pageable).toList();
-        List<QuatationResponseDto> quatationResponseDtoList = new ArrayList<>();
+        List<QuotationResponseDto> quotationResponseDtoList = new ArrayList<>();
 
         for(CustomerRequestForm customerRequestForm : customerRequestFormList){
-            quatationResponseDtoList.add(new QuatationResponseDto(customerRequestForm));
+            quotationResponseDtoList.add(new QuotationResponseDto(customerRequestForm));
         }
-        return quatationResponseDtoList;
+        return quotationResponseDtoList;
     }
 
     // (판매자) 고객 구매 요청 승인

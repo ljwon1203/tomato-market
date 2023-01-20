@@ -1,9 +1,7 @@
 package com.team8.shop.tomatomarket.controller;
 
 import com.team8.shop.tomatomarket.dto.*;
-import com.team8.shop.tomatomarket.entity.CustomerRequestForm;
 import com.team8.shop.tomatomarket.security.UserDetailsImpl;
-import com.team8.shop.tomatomarket.repository.SellerRepository;
 import com.team8.shop.tomatomarket.service.SellerServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -69,12 +67,12 @@ public class SellerController {
 
     // #18 (판매자) 고객 요청 목록 조회
     @GetMapping("/sellers/{sellerId}/quotations")
-    public List<QuatationResponseDto> getQuotation(@PathVariable Long sellerId,
-                                                  @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                  int page, int size){
+    public List<QuotationResponseDto> getQuotation(@PathVariable Long sellerId,
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                   int page, int size){
         _checkId(sellerId, userDetails);
         PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
-        return sellerServiceImpl.getQuatation(serviceReqDto);
+        return sellerServiceImpl.getQuotation(serviceReqDto);
     }
 
     // #18 (판매자) 고객 구매 요청 승인
