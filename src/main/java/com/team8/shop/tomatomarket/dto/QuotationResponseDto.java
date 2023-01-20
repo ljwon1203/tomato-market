@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class QuotationResponseDto {
-    private ProductResponseDto productResponseDto;
-    private UserResponseDto userResponseDto;
+    private ProductResponseDto product;
+    private UserResponseDto user;
     private boolean isApproval;
 
     public QuotationResponseDto(CustomerRequestForm customerRequestForm){
-        this.productResponseDto = new ProductResponseDto(customerRequestForm.getProduct());
-        this.userResponseDto = new UserResponseDto(customerRequestForm.getUser());
+        this.product = new ProductResponseDto(customerRequestForm.getProduct());
+        this.user = new UserResponseDto(customerRequestForm.getUser());
         this.isApproval = customerRequestForm.getIsApproval();
     }
 }
