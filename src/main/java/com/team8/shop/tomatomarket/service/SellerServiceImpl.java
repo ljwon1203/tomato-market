@@ -1,11 +1,12 @@
 package com.team8.shop.tomatomarket.service;
 
-import com.team8.shop.tomatomarket.dto.GetSellerRespDto;
-import com.team8.shop.tomatomarket.dto.PageableServiceReqDto;
+import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.Seller;
+import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
+import com.team8.shop.tomatomarket.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +18,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SellerServiceImpl implements SellerService{
+public class SellerServiceImpl implements SellerService {
     private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;
+
 
     //#17-2 판매자 정보 조회
     @Override
@@ -66,7 +68,7 @@ public class SellerServiceImpl implements SellerService{
         Seller seller = sellerRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 판매자 입니다."));
 
-        List<Product>productList = productRepository.findAllByUserId(userId);
+        List<Product> productList = productRepository.findAllByUserId(userId);
         return new GetSellerRespDto(seller, productList);
     }
 
@@ -84,5 +86,35 @@ public class SellerServiceImpl implements SellerService{
 
         // 변경사항을 저장합니다.
         sellerRepository.save(seller);
+    }
+
+    //(판매자) 프로필 설정
+    @Override
+    public GetSellerRespDto sellerUpdate(Long sellerId, GetSellerReqDto getSellerReqDto) {
+        String nickname = getSellerReqDto.getNickname();
+        String introduce = getSellerReqDto.getIntroduce();
+        List<String> categories = getSellerReqDto.getCategories();
+        List<Product> products = productRepository.findAllById(sellerId);
+
+        Seller seller = _getSeller(sellerId);
+        User user = new User(nickname);
+
+        seller.updateIntroduce(introduce);
+        user.updateNickName(nickname);
+        //매칭주제가 카테고리?이지만 GetSellerRespDto에는 List<Product> products로 받아서
+        // 일단 products로 해봤습니다.
+        // categories.updateCate(categories);
+        sellerRepository.save(seller);
+        return new GetSellerRespDto(seller, products);
+
+    }
+
+
+    // 내부 사용: 판매자 검증 by id
+    private Seller _getSeller(Long sellerId) {
+        return sellerRepository.findById(sellerId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
+        );
+
     }
 }
