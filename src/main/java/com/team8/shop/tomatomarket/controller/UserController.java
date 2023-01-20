@@ -49,7 +49,7 @@ public class UserController {
     }
 
     //(고객)프로필 조회
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users")
     public UserResponseDto getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails){
         Long userId = userDetails.getUserId();
         return userServiceImpl.getProfile(userId);

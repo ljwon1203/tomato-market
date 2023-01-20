@@ -16,8 +16,8 @@ public enum UserRoleEnum {
     }
 
     public static class Authority{
-        public static final String ADMIN = "ROLE_ADMIN";
-        public static final String SELLER = "ROLE_SELLER";
-        public static final String CUSTOMER = "ROLE_CUSTOMER";
+        public static final String ADMIN = "ADMIN";
+        public static final String SELLER = "SELLER";
+        public static final String CUSTOMER = "CUSTOMER";
     }
 }
