@@ -23,6 +23,7 @@ public class CustomerRequestForm {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
     @Column(nullable = false)
@@ -35,5 +36,7 @@ public class CustomerRequestForm {
     }
 
     public void approve(){this.isApproval = true;}
+
+    public void disapprove(){this.isApproval = false;}
 
 }
