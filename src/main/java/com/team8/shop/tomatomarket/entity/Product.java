@@ -34,18 +34,19 @@ public class Product {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Seller seller;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private ProductCategoryEnum productCategory;
 
 
-
-    public Product(String name, int price, String desc, ProductCategory productCategory){
+    public Product(String name, int price, String desc, ProductCategoryEnum productCategory){
         this.name = name;
         this.price = price;
         this.desc = desc;
         this.productCategory = productCategory;
-
     }
 
-    public void updateProduct(String name, int price, String desc, ProductCategory productCategory){
+    public void updateProduct(String name, int price, String desc, ProductCategoryEnum productCategory){
         this.name = name;
         this.price = price;
         this.desc = desc;

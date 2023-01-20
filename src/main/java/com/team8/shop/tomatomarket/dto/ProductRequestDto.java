@@ -1,8 +1,6 @@
 package com.team8.shop.tomatomarket.dto;
 
-import com.team8.shop.tomatomarket.entity.Product;
-import com.team8.shop.tomatomarket.entity.ProductCategory;
-import com.team8.shop.tomatomarket.entity.User;
+import com.team8.shop.tomatomarket.entity.ProductCategoryEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +13,6 @@ public class ProductRequestDto {
 
     private String desc;
 
-    private ProductCategory productCategory;
+    private ProductCategoryEnum productCategory;
 
 }
