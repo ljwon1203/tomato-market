@@ -3,8 +3,10 @@ package com.team8.shop.tomatomarket.service;
 import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.Seller;
+import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
+import com.team8.shop.tomatomarket.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SellerServiceImpl implements SellerService{
+public class SellerServiceImpl implements SellerService {
     private final SellerRepository sellerRepository;
     private final ProductRepository productRepository;
 
@@ -31,7 +33,6 @@ public class SellerServiceImpl implements SellerService{
 
         return new GetSellerRespDto(seller, products);
     }
-
 
     @Override
     public List<GetSellerRespDto> getSellerList(PageableServiceReqDto dto) {
@@ -65,7 +66,7 @@ public class SellerServiceImpl implements SellerService{
         Seller seller = sellerRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 판매자 입니다."));
 
-        List<Product>productList = productRepository.findAllByUserId(userId);
+        List<Product> productList = productRepository.findAllByUserId(userId);
         return new GetSellerRespDto(seller, productList);
     }
 
@@ -85,6 +86,25 @@ public class SellerServiceImpl implements SellerService{
         sellerRepository.save(seller);
     }
 
+    //(판매자) 프로필 설정
+    @Override
+    public GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto) {
+        String introduce = sellerServiceDto.getIntroduce();
+        List<Product> products = productRepository.findAllById(sellerServiceDto.getSellerId());
+
+        Seller seller = _getSeller(sellerServiceDto.getSellerId());
+
+        seller.updateIntroduce(introduce);
+        sellerRepository.save(seller);
+        return new GetSellerRespDto(seller, products);
+
+    }
+
+    // 내부 사용: 판매자 검증 by id
+    private Seller _getSeller(Long sellerId) {
+        return sellerRepository.findById(sellerId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
+        );
 
     // #12 (판매자) 판매 상품 등록
     @Override
@@ -95,7 +115,6 @@ public class SellerServiceImpl implements SellerService{
                                       productRequestDto.getProductCategory());
         productRepository.save(product);
     }
-
 
     // #12 (판매자) 판매 상품 수정
     @Override
@@ -108,13 +127,11 @@ public class SellerServiceImpl implements SellerService{
         productRepository.save(product);
     }
 
-
     @Override
     public void deleteProduct(Long productId){
         Product product = _getProduct(productId);
         productRepository.delete(product);
     }
-
 
     private Product _getProduct(Long productId){
         Product product = productRepository.findById(productId).orElseThrow(

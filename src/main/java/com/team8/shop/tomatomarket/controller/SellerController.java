@@ -7,7 +7,7 @@ import com.team8.shop.tomatomarket.service.SellerServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springfmework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,7 +48,6 @@ public class SellerController {
         sellerServiceImpl.createProduct(productRequestDto);
     }
 
-
     // #12 (판매자)판매 상품 수정
     @PatchMapping("/sellers/{sellerId}/products/{productId}")
     public void updateProduct(@PathVariable Long sellerId,
@@ -59,7 +58,6 @@ public class SellerController {
         sellerServiceImpl.updateProduct(productId, productRequestDto);
     }
 
-
     // #12(판매자)판매 상품 삭제
     @DeleteMapping("/sellers/{sellerId}/products/{productId}")
     public void deleteProduct(@PathVariable Long sellerId,
@@ -69,11 +67,21 @@ public class SellerController {
         sellerServiceImpl.deleteProduct(productId);
     }
 
-
     private void _checkId(Long sellerId, UserDetailsImpl userDetails){
         Long checkSellerUserId = sellerServiceImpl.getSeller(sellerId).getUser().getId();
         if(!userDetails.isValidId(checkSellerUserId)){
             throw new IllegalArgumentException("등록된 정보와 일치하지 않습니다.");
         }
+    }
+
+    //(판매자) 프로필 설정
+    @PatchMapping("/sellers/{sellerId}")
+    public GetSellerRespDto setSellerProfile(@PathVariable Long sellerId, @RequestBody GetSellerReqDto getSellerReqDto , @AuthenticationPrincipal UserDetailsImpl userDetails){
+        Long checkSellerUserId = sellerService.getSeller(sellerId).getUser().getId();
+        if(!userDetails.isValidId(checkSellerUserId)){
+            throw new IllegalArgumentException("프로필 작성자와 일치하지 않습니다.");
+        }
+        SellerServiceDto sellerServiceDto = new SellerServiceDto(userDetails.getUserId(), getSellerReqDto.getIntroduce());
+        return sellerService.sellerUpdate(sellerServiceDto);
     }
 }
