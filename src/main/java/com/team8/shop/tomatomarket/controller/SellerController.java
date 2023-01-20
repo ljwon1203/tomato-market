@@ -1,6 +1,7 @@
 package com.team8.shop.tomatomarket.controller;
 
 import com.team8.shop.tomatomarket.dto.*;
+import com.team8.shop.tomatomarket.entity.CustomerRequestForm;
 import com.team8.shop.tomatomarket.security.UserDetailsImpl;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
 import com.team8.shop.tomatomarket.service.SellerServiceImpl;
@@ -15,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SellerController {
     private final SellerServiceImpl sellerServiceImpl;
-    private final SellerRepository sellerRepository;
 
     // 판매자 전체목록 조회
     @GetMapping("/sellers")
@@ -48,7 +48,6 @@ public class SellerController {
         sellerServiceImpl.createProduct(productRequestDto);
     }
 
-
     // #12 (판매자)판매 상품 수정
     @PatchMapping("/sellers/{sellerId}/products/{productId}")
     public void updateProduct(@PathVariable Long sellerId,
@@ -59,7 +58,6 @@ public class SellerController {
         sellerServiceImpl.updateProduct(productId, productRequestDto);
     }
 
-
     // #12(판매자)판매 상품 삭제
     @DeleteMapping("/sellers/{sellerId}/products/{productId}")
     public void deleteProduct(@PathVariable Long sellerId,
@@ -69,7 +67,26 @@ public class SellerController {
         sellerServiceImpl.deleteProduct(productId);
     }
 
+    // #18 (판매자) 고객 요청 목록 조회
+    @GetMapping("/sellers/{sellerId}/quotations")
+    public List<QuatationResponseDto> getQuotation(@PathVariable Long sellerId,
+                                                  @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                  int page, int size){
+        _checkId(sellerId, userDetails);
+        PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
+        return sellerServiceImpl.getQuatation(serviceReqDto);
+    }
 
+    // #18 (판매자) 고객 구매 요청 승인
+    @PatchMapping("/sellers/{sellerId}/quotations/{requestId}")
+    public void approveQuotation(@PathVariable Long sellerId,
+                                 @PathVariable Long requestId,
+                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
+        _checkId(sellerId, userDetails);
+        sellerServiceImpl.approveQuotation(requestId);
+    }
+
+    // 내부 함수 : {sellerId}와 로그인한 유저가 같은 사람인지 검증
     private void _checkId(Long sellerId, UserDetailsImpl userDetails){
         Long checkSellerUserId = sellerServiceImpl.getSeller(sellerId).getUser().getId();
         if(!userDetails.isValidId(checkSellerUserId)){

@@ -1,6 +1,7 @@
 package com.team8.shop.tomatomarket.service;
 
 import com.team8.shop.tomatomarket.dto.*;
+import com.team8.shop.tomatomarket.entity.CustomerRequestForm;
 import com.team8.shop.tomatomarket.entity.User;
 
 import java.util.List;
@@ -19,4 +20,8 @@ public interface SellerService {
     void updateProduct(Long productId, ProductRequestDto productRequestDto);
 
     void deleteProduct(Long productId);
+
+    List<QuatationResponseDto> getQuatation(PageableServiceReqDto dto);
+
+    void approveQuotation(Long requestId);
 }
