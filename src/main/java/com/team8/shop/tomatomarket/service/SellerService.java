@@ -15,7 +15,7 @@ public interface SellerService {
 
     void disapproveSellerAuth(Long sellerId);
     
-    GetSellerRespDto sellerUpdate(Long sellerId, GetSellerReqDto getSellerReqDto);
+    GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto);
 
 
 }

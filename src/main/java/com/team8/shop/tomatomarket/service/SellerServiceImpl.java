@@ -90,20 +90,13 @@ public class SellerServiceImpl implements SellerService {
 
     //(판매자) 프로필 설정
     @Override
-    public GetSellerRespDto sellerUpdate(Long sellerId, GetSellerReqDto getSellerReqDto) {
-        String nickname = getSellerReqDto.getNickname();
-        String introduce = getSellerReqDto.getIntroduce();
-        List<String> categories = getSellerReqDto.getCategories();
-        List<Product> products = productRepository.findAllById(sellerId);
+    public GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto) {
+        String introduce = sellerServiceDto.getIntroduce();
+        List<Product> products = productRepository.findAllById(sellerServiceDto.getSellerId());
 
-        Seller seller = _getSeller(sellerId);
-        User user = new User(nickname);
+        Seller seller = _getSeller(sellerServiceDto.getSellerId());
 
         seller.updateIntroduce(introduce);
-        user.updateNickName(nickname);
-        //매칭주제가 카테고리?이지만 GetSellerRespDto에는 List<Product> products로 받아서
-        // 일단 products로 해봤습니다.
-        // categories.updateCate(categories);
         sellerRepository.save(seller);
         return new GetSellerRespDto(seller, products);
 

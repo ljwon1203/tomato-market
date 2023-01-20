@@ -40,11 +40,6 @@ public class User {
         this.role = UserRoleEnum.CUSTOMER;
     }
 
-    //닉네임 전용???
-    public User(String nickname){
-        this.nickname = nickname;
-    }
-
     // 패스워드 검증용
     public boolean isValidPassword(String password){
         return this.password.equals(password);
