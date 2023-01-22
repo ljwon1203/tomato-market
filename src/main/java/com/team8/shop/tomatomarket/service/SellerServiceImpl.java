@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,13 +67,13 @@ public class SellerServiceImpl implements SellerService {
 
     //(판매자) 나의 판매상품 조회
     @Override
-    public GetSellerRespDto getMyProductList(Long userId) {
-        Seller seller = sellerRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다."));
+    public List<ProductResponseDto> getMyProductList(Long userId) {
+        Seller seller = _getSeller(userId);
 
         List<Product> productList = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
 
-        return new GetSellerRespDto(seller, productList);
+
+        return productList.stream().map(ProductResponseDto::new).collect(Collectors.toList());
     }
 
     @Override

@@ -30,11 +30,9 @@ public class SellerController {
 
     // (판매자)나의 판매상품 조회
     @GetMapping("/sellers/products")
-    public GetSellerRespDto getMyProductList(@PathVariable Long sellerId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        _checkId(sellerId, userDetails);
-        Long userId = userDetails.getUserId();
+    public List<ProductResponseDto> getMyProductList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         // getMyProductList에서 user에 해당하는 productList를 반환해 준다
-        return sellerServiceImpl.getMyProductList(userId);
+        return sellerServiceImpl.getMyProductList(userDetails.getUserId());
     }
 
     // #12 (판매자)판매 상품 등록
