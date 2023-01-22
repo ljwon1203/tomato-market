@@ -44,21 +44,15 @@ public class SellerController {
     }
 
     // #12 (판매자)판매 상품 수정
-    @PatchMapping("/sellers/{sellerId}/products/{productId}")
-    public void updateProduct(@PathVariable Long sellerId,
-                              @PathVariable Long productId,
-                              @RequestBody ProductRequestDto productRequestDto,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails){
-        _checkId(sellerId, userDetails);
+    @PatchMapping("/sellers/products/{productId}")
+    public void updateProduct(@PathVariable Long productId,
+                              @RequestBody ProductRequestDto productRequestDto){
         sellerServiceImpl.updateProduct(productId, productRequestDto);
     }
 
     // #12(판매자)판매 상품 삭제
-    @DeleteMapping("/sellers/{sellerId}/products/{productId}")
-    public void deleteProduct(@PathVariable Long sellerId,
-                              @PathVariable Long productId,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails){
-        _checkId(sellerId, userDetails);
+    @DeleteMapping("/sellers/products/{productId}")
+    public void deleteProduct(@PathVariable Long productId) {
         sellerServiceImpl.deleteProduct(productId);
     }
 
