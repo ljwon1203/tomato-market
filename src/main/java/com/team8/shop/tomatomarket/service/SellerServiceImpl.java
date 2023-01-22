@@ -51,18 +51,22 @@ public class SellerServiceImpl implements SellerService {
         Pageable pageable = PageRequest.of(page, size, sort);
 
         // sellerPepository에 있는걸 가져와서 sellerList에 넣음 List
-        List<Seller> sellerList = sellerRepository.findAll(pageable).toList();
+//        List<Seller> sellerList = sellerRepository.findAll(pageable);
+//        System.out.println(sellerList.size());
 
         // getsellerRespDtos ArrayList로 만든다.
-        List<GetSellerRespDto> getSellerRespDtos = new ArrayList<>();
+//        List<GetSellerRespDto> getSellerRespDtos = new ArrayList<>();
 
-        for (Seller seller : sellerList) {
-            //sellerList에 있는 seller를 하나씩 꺼내서
-            List<Product> products = productRepository.findAllById(seller.getId()).orElse(new ArrayList<>());
-            //seller와 product을 getSellerRespDtos에 담아준다.
-            getSellerRespDtos.add(new GetSellerRespDto(seller, products));
-        }
-        return getSellerRespDtos;
+//        for (Seller seller : sellerList) {
+//            //sellerList에 있는 seller를 하나씩 꺼내서
+//            List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
+//            //seller와 product을 getSellerRespDtos에 담아준다.
+//            getSellerRespDtos.add(new GetSellerRespDto(seller, products));
+//        }
+        return sellerRepository.findAll(pageable).getContent().stream().map(seller -> {
+            List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
+            return new GetSellerRespDto(seller, products);
+        }).collect(Collectors.toList());
     }
 
     //(판매자) 나의 판매상품 조회

@@ -13,7 +13,7 @@ public class PageableServiceReqDto {
     public PageableServiceReqDto(int page, int size){
         this.page = page;
         this.size = size;
-        this.sortBy = "Id";
+        this.sortBy = "id";
         this.isAsc = true;
     }
 }
