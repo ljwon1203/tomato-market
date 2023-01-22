@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class CreateProductReqDto {
-    private final Long sellerId;
+    private final Long userId;
     private final String name;
     private final int price;
     private final String description;

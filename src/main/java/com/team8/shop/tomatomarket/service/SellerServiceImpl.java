@@ -107,7 +107,7 @@ public class SellerServiceImpl implements SellerService {
     // #12 (판매자) 판매 상품 등록
     @Override
     public void createProduct(CreateProductReqDto dto){
-        Seller seller = sellerRepository.findById(dto.getSellerId()).get();
+        Seller seller = _getSeller(dto.getUserId());
 
         Product product = new Product(dto.getName(),
                 dto.getPrice(),

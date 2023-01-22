@@ -1,11 +1,12 @@
 package com.team8.shop.tomatomarket.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class GetSellerReqDto {
-    private final String introduce;
+    private String introduce;
 }

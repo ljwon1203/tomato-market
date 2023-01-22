@@ -29,7 +29,7 @@ public class SellerController {
     }
 
     // (판매자)나의 판매상품 조회
-    @GetMapping("/sellers/{sellerId}/products")
+    @GetMapping("/sellers/products")
     public GetSellerRespDto getMyProductList(@PathVariable Long sellerId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         _checkId(sellerId, userDetails);
         Long userId = userDetails.getUserId();
@@ -38,12 +38,10 @@ public class SellerController {
     }
 
     // #12 (판매자)판매 상품 등록
-    @PostMapping("/sellers/{sellerId}/products")
-    public void createProduct(@PathVariable Long sellerId,
-                              @RequestBody ProductRequestDto productRequestDto,
+    @PostMapping("/sellers/products")
+    public void createProduct(@RequestBody ProductRequestDto productRequestDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails){
-        _checkId(sellerId, userDetails);
-        CreateProductReqDto dto = new CreateProductReqDto(sellerId, productRequestDto.getName(), productRequestDto.getPrice(), productRequestDto.getDescription(), productRequestDto.getProductCategory());
+        CreateProductReqDto dto = new CreateProductReqDto(userDetails.getUserId(), productRequestDto.getName(), productRequestDto.getPrice(), productRequestDto.getDescription(), productRequestDto.getProductCategory());
         sellerServiceImpl.createProduct(dto);
     }
 
