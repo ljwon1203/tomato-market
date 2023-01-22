@@ -17,15 +17,15 @@ public class SellerController {
 
     // 판매자 전체목록 조회
     @GetMapping("/sellers")
-    public List<GetSellerRespDto> getSellerList(int page, int size){
+    public List<GetSellerRespDto> getSellerList(@RequestParam Integer page, @RequestParam Integer size){
         PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
         return sellerServiceImpl.getSellerList(serviceReqDto);
     }
 
     // 판매자 정보 조회
-    @GetMapping("/sellers/{sellerId}")
-    public GetSellerRespDto getSeller(@PathVariable Long sellerId){
-        return sellerServiceImpl.getSeller(sellerId);
+    @GetMapping("/sellers/{userId}")
+    public GetSellerRespDto getSeller(@PathVariable Long userId){
+        return sellerServiceImpl.getSeller(userId);
     }
 
     // (판매자)나의 판매상품 조회
