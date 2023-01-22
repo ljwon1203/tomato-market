@@ -87,13 +87,12 @@ public class SellerController {
     }
 
     //(판매자) 프로필 설정
-    @PatchMapping("/sellers/{sellerId}")
-    public GetSellerRespDto setSellerProfile(@PathVariable Long sellerId, @RequestBody GetSellerReqDto getSellerReqDto , @AuthenticationPrincipal UserDetailsImpl userDetails){
-        Long checkSellerUserId = sellerServiceImpl.getSeller(sellerId).getUser().getId();
-        if(!userDetails.isValidId(checkSellerUserId)){
+    @PatchMapping("/sellers/{userId}")
+    public GetSellerRespDto setSellerProfile(@PathVariable Long userId, @RequestBody GetSellerReqDto getSellerReqDto , @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(!userDetails.isValidId(userId)){
             throw new IllegalArgumentException("프로필 작성자와 일치하지 않습니다.");
         }
-        SellerServiceDto sellerServiceDto = new SellerServiceDto(userDetails.getUserId(), getSellerReqDto.getIntroduce());
+        SellerServiceDto sellerServiceDto = new SellerServiceDto(userId, getSellerReqDto.getIntroduce());
         return sellerServiceImpl.sellerUpdate(sellerServiceDto);
     }
 

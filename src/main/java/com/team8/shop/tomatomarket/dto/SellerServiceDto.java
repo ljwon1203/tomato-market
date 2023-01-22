@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class SellerServiceDto {
-    private final Long sellerId;
+    private final Long userId;
     private final String introduce;
 }

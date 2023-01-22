@@ -31,7 +31,7 @@ public class SellerServiceImpl implements SellerService {
                 () -> new IllegalArgumentException("존재하지 않는 유저 입니다.")
         );
 
-        List<Product> products = productRepository.findAllBySellerId(seller.getUser().getId()).orElse(new ArrayList<>());
+        List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
 
         return new GetSellerRespDto(seller, products);
     }
@@ -94,10 +94,10 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto) {
         String introduce = sellerServiceDto.getIntroduce();
-        List<Product> products = productRepository.findAllById(sellerServiceDto.getSellerId()).orElse(new ArrayList<>());
 
-        Seller seller = _getSeller(sellerServiceDto.getSellerId());
+        Seller seller = _getSeller(sellerServiceDto.getUserId());
 
+        List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
         seller.updateIntroduce(introduce);
         sellerRepository.save(seller);
         return new GetSellerRespDto(seller, products);
@@ -174,8 +174,8 @@ public class SellerServiceImpl implements SellerService {
     }
     
     // 내부 사용: 판매자 검증 by id
-    private Seller _getSeller(Long sellerId) {
-        return sellerRepository.findById(sellerId).orElseThrow(
+    private Seller _getSeller(Long userId) {
+        return sellerRepository.findByUserId(userId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
         );
     }

@@ -32,6 +32,10 @@ public class SellerRequestForm {
         this.isApproval = false;
     }
 
+    public void updateIntroduce(String introduce){
+        this.introduce = introduce;
+    }
+
     public void approve(){
         this.isApproval = true;
     }
