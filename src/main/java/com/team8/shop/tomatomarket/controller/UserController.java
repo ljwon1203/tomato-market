@@ -32,8 +32,8 @@ public class UserController {
     }
 
     @PostMapping("/users/auth/waitings")
-    public void createSellerWaiting(@AuthenticationPrincipal UserDetails userDetails, @RequestBody SellerRequestDto dto){
-        CreateDisapprovedSellerFormReqDto serviceRequestDto = new CreateDisapprovedSellerFormReqDto(userDetails.getUsername(), dto.getIntroduce());
+    public void createSellerWaiting(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody SellerRequestDto dto){
+        CreateDisapprovedSellerFormReqDto serviceRequestDto = new CreateDisapprovedSellerFormReqDto(dto.getIntroduce(), userDetails.getUsername());
         sellerRequestFormServiceImpl.createDisapprovedForm(serviceRequestDto);
     }
 

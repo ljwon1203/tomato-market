@@ -33,6 +33,7 @@ public class SellerRequestFormServiceImpl implements SellerRequestFormService{
         // 만약 기존 데이터가 있다면, isApproval를 false 로 무조건 업데이트한다.
         if(sellerRequestForm.isPresent()){
             instance = sellerRequestForm.get();
+            instance.updateIntroduce(introduce);
             instance.disapprove();
         }
         // 기존 데이터가 없다면, 새로운 인스턴스를 만들어서 저장한다. (isApproval의 기본값은 false 이기 때문에, 굳이 업데이트 할 필요가 없다.)

@@ -43,7 +43,7 @@ public class AdminController {
         return sellerRequestFormServiceImpl.getSellerWaitings();
     }
 
-    @PatchMapping("/auth/waiting/{waitingId}")
+    @PatchMapping("/auth/waitings/{waitingId}")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public void approveSellerAuth(@PathVariable Long waitingId){
         sellerRequestFormServiceImpl.approveSellerAuth(waitingId);

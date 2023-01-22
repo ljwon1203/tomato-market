@@ -44,6 +44,7 @@ public class SellerServiceImpl implements SellerService {
         String sortBy = dto.getSortBy();
         boolean isAsc = dto.isAsc();
 
+
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
