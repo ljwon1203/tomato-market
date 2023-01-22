@@ -1,6 +1,7 @@
 package com.team8.shop.tomatomarket.controller;
 
 import com.team8.shop.tomatomarket.dto.*;
+import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.security.UserDetailsImpl;
 import com.team8.shop.tomatomarket.service.SellerServiceImpl;
 
@@ -23,9 +24,17 @@ public class SellerController {
     }
 
     // 판매자 정보 조회
-    @GetMapping("/sellers/{userId}")
-    public GetSellerRespDto getSeller(@PathVariable Long userId){
-        return sellerServiceImpl.getSeller(userId);
+    @GetMapping("/sellers/{sellerId}")
+    public GetSellerRespDto getSellerBySellerId(@PathVariable Long sellerId){
+        return sellerServiceImpl.getSellerBySellerId(sellerId);
+    }
+
+    @GetMapping("/sellers/users/{userId}")
+    public GetSellerRespDto getSellerByUserId(@PathVariable Long userId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        if(!userDetails.isValidId(userId)){
+            throw new IllegalArgumentException("본인의 정보만 조회가 가능합니다.");
+        }
+        return sellerServiceImpl.getSellerByUserId(userId);
     }
 
     // (판매자)나의 판매상품 조회
@@ -88,9 +97,11 @@ public class SellerController {
 
     // 내부 함수 : {sellerId}와 로그인한 유저가 같은 사람인지 검증
     private void _checkId(Long sellerId, UserDetailsImpl userDetails){
-        Long checkSellerUserId = sellerServiceImpl.getSeller(sellerId).getUser().getId();
+        Long checkSellerUserId = sellerServiceImpl.getSellerBySellerId(sellerId).getUser().getId();
         if(!userDetails.isValidId(checkSellerUserId)){
             throw new IllegalArgumentException("등록된 정보와 일치하지 않습니다.");
         }
     }
+
+
 }

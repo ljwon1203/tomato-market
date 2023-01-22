@@ -5,7 +5,9 @@ import com.team8.shop.tomatomarket.dto.*;
 import java.util.List;
 
 public interface SellerService {
-    GetSellerRespDto getSeller(Long sellerId);
+    GetSellerRespDto getSellerBySellerId(Long sellerId);
+
+    GetSellerRespDto getSellerByUserId(Long userId);
 
     List<ProductResponseDto> getMyProductList(Long userId);
     

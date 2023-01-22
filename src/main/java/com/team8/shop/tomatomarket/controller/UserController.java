@@ -6,7 +6,7 @@ import com.team8.shop.tomatomarket.service.SellerRequestFormServiceImpl;
 import com.team8.shop.tomatomarket.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -54,4 +54,5 @@ public class UserController {
         Long userId = userDetails.getUserId();
         return userServiceImpl.getProfile(userId);
     }
+
 }
