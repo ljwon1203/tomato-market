@@ -23,12 +23,12 @@ public class Seller {
     private String introduce;
 
     @Column(nullable = false)
-    private boolean is_removed;
+    private boolean isRemoved;
 
     public Seller(User user, String introduce){
         this.user = user;
         this.introduce = introduce;
-        this.is_removed = false;
+        this.isRemoved = false;
     }
 
     public void updateIntroduce(String introduce){
@@ -36,6 +36,6 @@ public class Seller {
     }
 
     public void remove(){
-        this.is_removed = true;
+        this.isRemoved = true;
     }
 }

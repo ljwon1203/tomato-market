@@ -67,21 +67,15 @@ public class SellerController {
 
 
     // #18 (판매자) 고객 요청 목록 조회
-    @GetMapping("/sellers/{sellerId}/quotations")
-    public List<QuotationResponseDto> getQuotation(@PathVariable Long sellerId,
-                                                   @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                   int page, int size){
-        _checkId(sellerId, userDetails);
+    @GetMapping("/sellers/quotations")
+    public List<QuotationResponseDto> getQuotation(int page, int size){
         PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
         return sellerServiceImpl.getQuotation(serviceReqDto);
     }
 
     // #18 (판매자) 고객 구매 요청 승인
-    @PatchMapping("/sellers/{sellerId}/quotations/{requestId}")
-    public void approveQuotation(@PathVariable Long sellerId,
-                                 @PathVariable Long requestId,
-                                 @AuthenticationPrincipal UserDetailsImpl userDetails){
-        _checkId(sellerId, userDetails);
+    @PatchMapping("/sellers/quotations/{requestId}")
+    public void approveQuotation(@PathVariable Long requestId){
         sellerServiceImpl.approveQuotation(requestId);
     }
 

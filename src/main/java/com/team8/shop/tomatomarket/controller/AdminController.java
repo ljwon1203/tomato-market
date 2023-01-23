@@ -31,7 +31,7 @@ public class AdminController {
         return sellerServiceImpl.getSellerList(serviceReqDto);
     }
 
-    @PatchMapping("/sellers/{sellerId}")
+    @DeleteMapping("/sellers/{sellerId}")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public void disapproveSellerAuth(@PathVariable Long sellerId){
         sellerServiceImpl.disapproveSellerAuth(sellerId);
