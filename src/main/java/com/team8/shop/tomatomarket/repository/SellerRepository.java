@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface SellerRepository extends JpaRepository<Seller, Long> {
     Optional<Seller> findByUserId(Long userId);
 
-    Page<Seller> findAllAndRemovedFalse(Pageable pageable);
+    Page<Seller> findAllByIsRemovedFalse(Pageable pageable);
 }

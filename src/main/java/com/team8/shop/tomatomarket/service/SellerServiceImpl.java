@@ -74,7 +74,7 @@ public class SellerServiceImpl implements SellerService {
 //            //seller와 product을 getSellerRespDtos에 담아준다.
 //            getSellerRespDtos.add(new GetSellerRespDto(seller, products));
 //        }
-        return sellerRepository.findAllAndRemovedFalse(pageable).getContent().stream().map(seller -> {
+        return sellerRepository.findAllByIsRemovedFalse(pageable).getContent().stream().map(seller -> {
             List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
             return new GetSellerRespDto(seller, products);
         }).collect(Collectors.toList());
