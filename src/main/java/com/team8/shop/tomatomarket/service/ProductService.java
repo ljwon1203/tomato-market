@@ -25,7 +25,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final CustomerRequestFormRepository customerRequestFormRepository;
-    private final SellerRequestFormRepository sellerRequestFormRepository;
 
     //#14 전체 판매상품 목록 조회
     @Transactional
@@ -52,13 +51,14 @@ public class ProductService {
 
         //기존 상품에 대한 구매요청이 있다면, 재구매 요청
         if(customerRequestForm.isPresent()){
-            instance = customerRequestForm.get();
-            instance.disapprove();
+//            instance = customerRequestForm.get();
+//            instance.disapprove();
+            throw new IllegalArgumentException("이미 구매 요청한 상품입니다.");
         }
         else {
             //작업을 마친 뒤, isApproval = false여야한다.
             instance = new CustomerRequestForm(product, user);
+            customerRequestFormRepository.save(instance);
         }
-        customerRequestFormRepository.save(instance);
     }
 }
