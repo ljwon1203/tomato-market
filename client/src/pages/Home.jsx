@@ -135,33 +135,20 @@ export default function Home() {
   }, [mode]);
 
   const getJWTToken = () => {
-    console.log("[LOG] JWT TOKEN 여부를 검증합니다.");
     const jwtToken = localStorage.getItem("access_token");
 
     if (!jwtToken) {
-      console.log(
-        "[LOG] JWT TOKEN이 존재하지 않기에 로그인 페이지로 이동합니다."
-      );
       navigate("/login");
       return;
     }
-    console.log("[LOG] JWT TOKEN이 존재합니다.", jwtToken);
     api.default.setHeadersAuthorization(jwtToken);
   };
 
   const getUserProfile = async () => {
     try {
-      console.log("[LOG] 내 정보를 불러옵니다.");
       const { data } = await api.getProfile();
-
-      console.log("[LOG] 유저아이디를 셋팅합니다.");
       setUserId(data.id);
-      console.log("[LOG] 닉네임을 셋팅합니다.");
       setNickname(data.nickname);
-
-      console.log(
-        "[LOG] 유저의 권한을 셋팅하여, 적절한 메뉴를 초기화 할 수 있도록 합니다."
-      );
       setAuth(AUTH[data.role]);
 
       switch (AUTH[data.role]) {
@@ -196,7 +183,6 @@ export default function Home() {
   };
 
   const submitSellerAuth = () => {
-    console.log("[LOG] 판매자 신청을 합니다.");
     const introduce = window.prompt("판매자 소개글을 입력해주세요.");
     if (!introduce) {
       alert("한 단어 이상 입력해주세요.");
@@ -241,7 +227,6 @@ export default function Home() {
     };
 
     try {
-      console.log("[LOG] 새로운 상품정보를 등록합니다.");
       await api.postProduct(payload);
       await getMyProducts();
       setIsProductModalOpen(false);
@@ -251,9 +236,8 @@ export default function Home() {
   };
 
   const getMyProducts = () => {
+    setMyproducts([]);
     api.getMyProducts().then((res) => {
-      console.log("[RESPONSE] 다음의 나의 상품정보를 불러옵니다.");
-      console.log(res.data);
       setMyproducts(res.data);
     });
   };
@@ -303,31 +287,32 @@ export default function Home() {
   };
 
   const getCustomerRequests = () => {
+    setCustomerRequest([]);
     api
       .getQuotations({
         page: 0,
         size: 10,
       })
       .then((res) => {
-        console.log(res.data);
         setCustomerRequest(res.data);
       });
   };
 
   const getSellersAuths = () => {
+    setSellerRequest([]);
     api.getSellerAuth().then((res) => {
       setSellerRequest(res.data);
     });
   };
 
   const getSellers = () => {
+    setSellers([]);
     api
       .getSellers({
         page: 0,
         size: 10,
       })
       .then((res) => {
-        console.log(res.data);
         setSellers(res.data);
       });
   };
@@ -343,20 +328,20 @@ export default function Home() {
   };
 
   const getAllProducts = () => {
+    setProducts([]);
     api
       .getProducts({
         page: 0,
         size: 10,
       })
       .then((res) => {
-        console.log(res.data);
         setProducts(res.data);
       });
   };
 
   const getAllCustomers = () => {
+    setCustomers([]);
     api.getAllCustomers({ page: 0, size: 10 }).then((res) => {
-      console.log(res.data);
       setCustomers(res.data);
     });
   };

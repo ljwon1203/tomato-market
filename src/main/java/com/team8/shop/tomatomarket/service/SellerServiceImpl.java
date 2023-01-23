@@ -153,7 +153,7 @@ public class SellerServiceImpl implements SellerService {
 
     // (판매자) 고객 구매 요청 목록 조회
     @Override
-    public List<QuotationResponseDto> getQuotation(PageableServiceReqDto dto) {
+    public List<QuotationResponseDto> getQuotation(GetQuotationReqDto dto) {
         int page = dto.getPage();
         int size = dto.getSize();
         String sortBy = dto.getSortBy();
@@ -163,7 +163,7 @@ public class SellerServiceImpl implements SellerService {
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<CustomerRequestForm> customerRequestFormList = customerRequestFormRepository.findAll(pageable).toList();
+        List<CustomerRequestForm> customerRequestFormList = customerRequestFormRepository.findAllByProductSellerUserId(dto.getUserId(), pageable).toList();
         List<QuotationResponseDto> quotationResponseDtoList = new ArrayList<>();
 
         for(CustomerRequestForm customerRequestForm : customerRequestFormList){

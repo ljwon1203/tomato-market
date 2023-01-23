@@ -35,31 +35,20 @@ export default function Profile() {
   }, []);
 
   const getJWTToken = () => {
-    console.log("[LOG] JWT TOKEN 여부를 검증합니다.");
     const jwtToken = localStorage.getItem("access_token");
 
     if (!jwtToken) {
-      console.log(
-        "[LOG] JWT TOKEN이 존재하지 않기에 로그인 페이지로 이동합니다."
-      );
       navigate("/login");
       return;
     }
-    console.log("[LOG] JWT TOKEN이 존재합니다.", jwtToken);
     api.default.setHeadersAuthorization(jwtToken);
   };
 
   const getUserProfile = async () => {
-    console.log("[LOG] 내 정보를 불러옵니다.");
     const { data } = await api.getProfile();
-    console.log(data);
-
-    console.log("[LOG] 유저아이디를 셋팅합니다.");
     setUserId(data.id);
     setUsername(data.username);
-    console.log("[LOG] 닉네임을 셋팅합니다.");
     setNickname(data.nickname);
-    console.log("[LOG] 유저의 권한을 셋팅합니다.");
     setAuth(AUTH[data.role]);
 
     if (AUTH[data.role] === AUTH.SELLER) {
@@ -70,10 +59,8 @@ export default function Profile() {
   };
 
   const getSellerProfile = async (userId) => {
-    console.log("[LOG] 판매자이므로 판매자 프로필을 요청합니다.");
     try {
       const { data } = await api.getMySellerProfile(userId);
-      console.log("[RESPONSE] ", data);
       setIntroduce(data.introduce);
     } catch (e) {
       throw new Error(e);
@@ -98,13 +85,7 @@ export default function Profile() {
     };
 
     try {
-      console.log("[LOG] 다음의 데이터를 보내 업데이트합니다.");
-      console.log(payload);
       await api.patchProfile(userId, payload);
-
-      console.log(
-        "[LOG] 수정이 완료되어 새로고침을 하여, 변경된 정보를 갱신합니다."
-      );
       await getUserProfile();
     } catch (e) {
       throw new Error(e);
@@ -117,12 +98,7 @@ export default function Profile() {
     };
 
     try {
-      console.log("[LOG] 다음의 데이터를 보내 업데이트합니다.");
-      console.log(payload);
       await api.patchSellerProfile(userId, payload);
-      console.log(
-        "[LOG] 수정이 완료되어 새로고침을 하여, 변경된 정보를 갱신합니다."
-      );
       await getSellerProfile(userId);
     } catch (e) {
       throw new Error(e);

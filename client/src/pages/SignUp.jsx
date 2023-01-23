@@ -47,10 +47,7 @@ export default function SignUp() {
       if (JWTToken) {
         JWTToken = JWTToken.replace("Bearer ", "");
       }
-      console.log("[LOG] JWT Token을 응답의 헤더에서 가져옵니다.", JWTToken);
-      console.log("[LOG] 토큰을 로컬스토리지에 셋팅합니다.");
       await localStorage.setItem("access_token", JWTToken);
-      console.log("[LOG] 메인페이지로 이동합니다.");
       navigator("/");
     } catch (e) {
       throw new Error(e);

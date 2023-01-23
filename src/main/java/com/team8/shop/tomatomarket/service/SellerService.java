@@ -23,7 +23,7 @@ public interface SellerService {
 
     void deleteProduct(Long productId);
 
-    List<QuotationResponseDto> getQuotation(PageableServiceReqDto dto);
+    List<QuotationResponseDto> getQuotation(GetQuotationReqDto dto);
 
     void approveQuotation(Long requestId);
 }

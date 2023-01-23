@@ -68,8 +68,8 @@ public class SellerController {
 
     // #18 (판매자) 고객 요청 목록 조회
     @GetMapping("/sellers/quotations")
-    public List<QuotationResponseDto> getQuotation(int page, int size){
-        PageableServiceReqDto serviceReqDto = new PageableServiceReqDto(page, size);
+    public List<QuotationResponseDto> getQuotation(int page, int size, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        GetQuotationReqDto serviceReqDto = new GetQuotationReqDto(userDetails.getUserId(), page, size);
         return sellerServiceImpl.getQuotation(serviceReqDto);
     }
 

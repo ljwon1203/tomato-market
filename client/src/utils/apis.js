@@ -27,7 +27,6 @@ export const api = {
     return http.get("/users");
   },
   getSellers: (params) => {
-    console.log(params);
     return http.get("/sellers", {
       params,
     });

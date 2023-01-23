@@ -47,23 +47,16 @@ export default function Login() {
       password: password,
     };
 
-    console.log("[LOG] 다음의 데이터를 전달하여 로그인 승인을 요청합니다.");
-    console.log(payload);
-
     try {
       const { headers } = await api.login(payload);
-      console.log(headers);
       let JWTToken = headers.get("Authorization");
       if (JWTToken) {
         JWTToken = JWTToken.replace("Bearer ", "");
       }
-      console.log("[LOG] JWT Token을 응답의 헤더에서 가져옵니다.", JWTToken);
-      console.log("[LOG] 토큰을 로컬스토리지에 셋팅합니다.");
       localStorage.setItem("access_token", JWTToken);
-      console.log("[LOG] 메인페이지로 이동합니다.");
       navigator("/");
     } catch (e) {
-      console.log(e.response);
+      throw new Error(e);
     }
   };
 
