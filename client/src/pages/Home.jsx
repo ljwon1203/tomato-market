@@ -236,9 +236,8 @@ export default function Home() {
   };
 
   const getMyProducts = () => {
-    setMyproducts([]);
     api.getMyProducts().then((res) => {
-      setMyproducts(res.data);
+      setMyproducts(() => [...res.data]);
     });
   };
 
@@ -280,40 +279,38 @@ export default function Home() {
     setIsProductModalOpen(true);
   };
 
-  const requestProductQuotation = (productId) => {
+  const requestProductQuotation = async (productId) => {
     try {
-      api.postQuotation(productId);
+      await api.postQuotation(productId);
+      await getAllProducts();
     } catch (e) {}
   };
 
   const getCustomerRequests = () => {
-    setCustomerRequest([]);
     api
       .getQuotations({
         page: 0,
         size: 10,
       })
       .then((res) => {
-        setCustomerRequest(res.data);
+        setCustomerRequest(() => [...res.data]);
       });
   };
 
   const getSellersAuths = () => {
-    setSellerRequest([]);
     api.getSellerAuth().then((res) => {
-      setSellerRequest(res.data);
+      setSellerRequest(() => [...res.data]);
     });
   };
 
   const getSellers = () => {
-    setSellers([]);
     api
       .getSellers({
         page: 0,
         size: 10,
       })
       .then((res) => {
-        setSellers(res.data);
+        setSellers(() => [...res.data]);
       });
   };
 
@@ -328,22 +325,215 @@ export default function Home() {
   };
 
   const getAllProducts = () => {
-    setProducts([]);
     api
       .getProducts({
         page: 0,
         size: 10,
       })
       .then((res) => {
-        setProducts(res.data);
+        setProducts(() => [...res.data]);
       });
   };
 
   const getAllCustomers = () => {
-    setCustomers([]);
     api.getAllCustomers({ page: 0, size: 10 }).then((res) => {
-      setCustomers(res.data);
+      setCustomers(() => [...res.data]);
     });
+  };
+
+  const ModeScreen = () => {
+    if (mode === MODE.customer) {
+      return customers.map((card) => (
+        <Grid item key={card.id} xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {card.username}
+              </Typography>
+              <Typography>{card.nickname}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      ));
+    } else if (mode === MODE.seller) {
+      return sellers.map((card) => (
+        <Grid item key={card} xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {card.user.username}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                variant="contained"
+                onClick={() => {
+                  setSelectedSeller(card);
+                  setIsSellerProfileModalOpen(true);
+                }}
+              >
+                정보보기
+              </Button>
+              {/* 관리자모드에서만 보이게 */}
+              {auth === AUTH.ADMIN ? (
+                <Button
+                  size="small"
+                  color="error"
+                  variant="contained"
+                  onClick={() => deleteSellerAuth(card)}
+                >
+                  권한삭제
+                </Button>
+              ) : (
+                <></>
+              )}
+            </CardActions>
+          </Card>
+        </Grid>
+      ));
+    } else if (mode === MODE.customerRequest) {
+      return customerRequest.map((card) => (
+        <Grid item key={card.id} xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography>
+                {card.user.username} 님의 {card.product.name} 구매 요청
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                color="success"
+                variant="contained"
+                disabled={card.approval}
+                onClick={() => approveCustomerRequest(card.id)}
+              >
+                {card.approval ? "승인됨" : "승인"}
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      ));
+    } else if (mode === MODE.sellerRequest) {
+      return sellerRequest.map((card) => (
+        <Grid item key={card} xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {card.username}
+              </Typography>
+              <Typography>{card.introduce}</Typography>
+            </CardContent>
+            <CardActions>
+              <Button
+                onClick={() => handleApproveSellerRequest(card.id)}
+                size="small"
+                color="success"
+                variant="contained"
+                disabled={card.approval}
+              >
+                {card.approval ? "승인됨" : "승인"}
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      ));
+    } else if (mode === MODE.products) {
+      return products.map((card) => (
+        <Grid item key={card.id} xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Chip label={card.category.name}></Chip>
+              <Typography gutterBottom variant="h5" component="h2">
+                {card.name}
+              </Typography>
+              <Typography>{card.description}</Typography>
+              <Typography>{card.price} 원</Typography>
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                color="success"
+                variant="contained"
+                onClick={() => requestProductQuotation(card.id)}
+                disabled={card.hasQuotation}
+              >
+                구매요청
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      ));
+    } else {
+      return myproducts.map((card) => (
+        <Grid item key={card.id} xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {card.name}
+              </Typography>
+              <Typography>{card.price} 원</Typography>
+              <Typography>{card.category.name}</Typography>
+              <Typography>{card.description}</Typography>
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                variant="contained"
+                onClick={() => openProductModifyModal(card.id)}
+              >
+                수정
+              </Button>
+              <Button
+                size="small"
+                color="error"
+                variant="contained"
+                onClick={() => deleteMyProduct(card.id)}
+              >
+                삭제
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      ));
+    }
   };
 
   return (
@@ -352,6 +542,7 @@ export default function Home() {
       <Dialog
         open={isProductModalOpen}
         onClose={handleProductRegisterModalClose}
+        fullWidth
       >
         <DialogTitle>
           {isProductModalModifyMode ? "상품수정" : "새상품 등록"}
@@ -432,7 +623,7 @@ export default function Home() {
         </DialogActions>
       </Dialog>
       {selectedSeller ? (
-        <Dialog open={isSellerProfileModalOpen} sx={{ m: 0, p: 2 }}>
+        <Dialog open={isSellerProfileModalOpen} sx={{ m: 0, p: 2 }} fullWidth>
           <DialogTitle>판매자 정보 조회</DialogTitle>
 
           <DialogContent dividers>
@@ -647,196 +838,7 @@ export default function Home() {
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {mode === MODE.seller
-              ? sellers.map((card) => (
-                  <Grid item key={card} xs={12} sm={6} md={4}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {card.user.username}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          size="small"
-                          variant="contained"
-                          onClick={() => {
-                            setSelectedSeller(card);
-                            setIsSellerProfileModalOpen(true);
-                          }}
-                        >
-                          정보보기
-                        </Button>
-                        {/* 관리자모드에서만 보이게 */}
-                        {auth === AUTH.ADMIN ? (
-                          <Button
-                            size="small"
-                            color="error"
-                            variant="contained"
-                            onClick={() => deleteSellerAuth(card)}
-                          >
-                            권한삭제
-                          </Button>
-                        ) : (
-                          <></>
-                        )}
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))
-              : mode === MODE.products
-              ? products.map((card) => (
-                  <Grid item key={card.id} xs={12} sm={6} md={4}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Chip label={card.category.name}></Chip>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {card.name}
-                        </Typography>
-                        <Typography>{card.description}</Typography>
-                        <Typography>{card.price} 원</Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          size="small"
-                          color="success"
-                          variant="contained"
-                          onClick={() => requestProductQuotation(card.id)}
-                        >
-                          구매요청
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))
-              : mode === MODE.customer
-              ? customers.map((card) => (
-                  <Grid item key={card.id} xs={12} sm={6} md={4}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {card.username}
-                        </Typography>
-                        <Typography>{card.nickname}</Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))
-              : mode === MODE.customerRequest
-              ? customerRequest.map((card) => (
-                  <Grid item key={card.id} xs={12} sm={6} md={4}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography>
-                          {card.user.username} 님의 {card.product.name} 구매
-                          요청
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          size="small"
-                          color="success"
-                          variant="contained"
-                          disabled={card.approval}
-                          onClick={() => approveCustomerRequest(card.id)}
-                        >
-                          {card.approval ? "승인됨" : "승인"}
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))
-              : mode === MODE.sellerRequest
-              ? sellerRequest.map((card) => (
-                  <Grid item key={card} xs={12} sm={6} md={4}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {card.username}
-                        </Typography>
-                        <Typography>{card.introduce}</Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          onClick={() => handleApproveSellerRequest(card.id)}
-                          size="small"
-                          color="success"
-                          variant="contained"
-                          disabled={card.approval}
-                        >
-                          {card.approval ? "승인됨" : "승인"}
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))
-              : myproducts.map((card) => (
-                  <Grid item key={card.id} xs={12} sm={6} md={4}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          {card.name}
-                        </Typography>
-                        <Typography>{card.price} 원</Typography>
-                        <Typography>{card.category.name}</Typography>
-                        <Typography>{card.description}</Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          size="small"
-                          variant="contained"
-                          onClick={() => openProductModifyModal(card.id)}
-                        >
-                          수정
-                        </Button>
-                        <Button
-                          size="small"
-                          color="error"
-                          variant="contained"
-                          onClick={() => deleteMyProduct(card.id)}
-                        >
-                          삭제
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
+            <ModeScreen />
           </Grid>
         </Container>
       </main>

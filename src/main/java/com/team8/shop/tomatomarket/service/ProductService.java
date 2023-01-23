@@ -1,13 +1,13 @@
 package com.team8.shop.tomatomarket.service;
 
 import com.team8.shop.tomatomarket.dto.ProductResponseDto;
+import com.team8.shop.tomatomarket.dto.ProductStatusResponseDto;
 import com.team8.shop.tomatomarket.dto.UserBuyProductsReqDto;
 import com.team8.shop.tomatomarket.entity.CustomerRequestForm;
 import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.CustomerRequestFormRepository;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
-import com.team8.shop.tomatomarket.repository.SellerRequestFormRepository;
 import com.team8.shop.tomatomarket.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +32,11 @@ public class ProductService {
     public List<ProductResponseDto> getProductList() {
         List<Product> products = productRepository.findAll();
         List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
+        List<Long> requestIds = customerRequestFormRepository.findAll().stream().map(req -> req.getProduct().getId()).collect(Collectors.toList());
+        System.out.println(requestIds);
 
         for (Product product : products) {
-            productResponseDtoList.add(new ProductResponseDto(product));
+            productResponseDtoList.add(new ProductStatusResponseDto(product, requestIds.contains(product.getId())));
         }
         return productResponseDtoList;
     }
