@@ -6,6 +6,7 @@ import com.team8.shop.tomatomarket.security.UserDetailsImpl;
 import com.team8.shop.tomatomarket.service.SellerServiceImpl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,7 @@ public class SellerController {
 
     // #12 (판매자)판매 상품 등록
     @PostMapping("/sellers/products")
+    @ResponseStatus(HttpStatus.CREATED)
     public void createProduct(@RequestBody ProductRequestDto productRequestDto,
                               @AuthenticationPrincipal UserDetailsImpl userDetails){
         CreateProductReqDto dto = new CreateProductReqDto(userDetails.getUserId(), productRequestDto.getName(), productRequestDto.getPrice(), productRequestDto.getDescription(), productRequestDto.getProductCategory());
