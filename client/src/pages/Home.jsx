@@ -215,9 +215,10 @@ export default function Home() {
     }
   };
 
-  const handleApproveSellerRequest = (waitingId) => {
+  const handleApproveSellerRequest = async (waitingId) => {
     try {
-      api.patchSellerAuth(waitingId);
+      await api.patchSellerAuth(waitingId);
+      await getSellersAuths();
     } catch (e) {
       throw new Error(e);
     }
@@ -354,7 +355,7 @@ export default function Home() {
   };
 
   const getAllCustomers = () => {
-    api.getAllCustomers({ page: 0, size: 1 }).then((res) => {
+    api.getAllCustomers({ page: 0, size: 10 }).then((res) => {
       console.log(res.data);
       setCustomers(res.data);
     });

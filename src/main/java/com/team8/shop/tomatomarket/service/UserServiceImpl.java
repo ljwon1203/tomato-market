@@ -16,8 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -130,13 +130,14 @@ public class UserServiceImpl implements UserService{
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<User> userList = userRepository.findAll(pageable).toList();
-
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
-
-        for (User user : userList) {
-            userResponseDtos.add(new UserResponseDto(user));
-        }
-        return userResponseDtos;
+//        List<User> userList = userRepository.findAll();
+//        System.out.println(userList.size());
+//
+//        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+//
+//        for (User user : userList) {
+//            userResponseDtos.add(new UserResponseDto(user));
+//        }
+        return userRepository.findAllByRole(UserRoleEnum.CUSTOMER, pageable).getContent().stream().map(UserResponseDto::new).collect(Collectors.toList());
     }
 }
