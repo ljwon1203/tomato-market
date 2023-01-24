@@ -169,6 +169,7 @@ export default function Home() {
     } catch (e) {
       if (e.response.status === 403) {
         handleLogout();
+        return;
       }
       alert(e.response.data.errorMessage);
     }
