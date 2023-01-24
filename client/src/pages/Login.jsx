@@ -48,7 +48,14 @@ export default function Login() {
     };
 
     try {
-      const { headers } = await api.login(payload);
+      console.log("===================================");
+      console.log("[LOG] 로그인");
+      console.log("===================================");
+      console.log("[REQUEST] ", payload);
+      const response = await api.login(payload);
+      console.log("[RESPONSE] ", response);
+
+      const { headers } = response;
       let JWTToken = headers.get("Authorization");
       if (JWTToken) {
         JWTToken = JWTToken.replace("Bearer ", "");
@@ -56,7 +63,8 @@ export default function Login() {
       localStorage.setItem("access_token", JWTToken);
       navigator("/");
     } catch (e) {
-      throw new Error(e);
+      const { response } = e;
+      alert(response.data.errorMessage);
     }
   };
 

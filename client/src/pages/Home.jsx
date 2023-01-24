@@ -144,9 +144,15 @@ export default function Home() {
     api.default.setHeadersAuthorization(jwtToken);
   };
 
+  // [v]
   const getUserProfile = async () => {
+    console.log("===================================");
+    console.log("[LOG] 나의 프로필 조회");
+    console.log("===================================");
     try {
-      const { data } = await api.getProfile();
+      const response = await api.getProfile();
+      console.log("[RESPONSE] ", response);
+      const { data } = response;
       setUserId(data.id);
       setNickname(data.nickname);
       setAuth(AUTH[data.role]);
@@ -161,28 +167,15 @@ export default function Home() {
           break;
       }
     } catch (e) {
-      if (e) {
-        api.default.deleteHeadersAuthorization();
-        delete localStorage.clear();
-        navigate("/login");
+      if (e.response.status === 403) {
+        handleLogout();
       }
+      alert(e.response.data.errorMessage);
     }
   };
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const onMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    window.location.reload();
-  };
-
-  const submitSellerAuth = () => {
+  // [v]
+  const submitSellerAuth = async () => {
     const introduce = window.prompt("판매자 소개글을 입력해주세요.");
     if (!introduce) {
       alert("한 단어 이상 입력해주세요.");
@@ -193,21 +186,260 @@ export default function Home() {
       introduce,
     };
     try {
-      api.postSellerAuth(payload);
+      console.log("===================================");
+      console.log(
+        "[LOG] 판매자 프로필 요청정보를 작성해서 운영자에게 판매자 등록 요청"
+      );
+      console.log("===================================");
+      console.log("[REQUEST] ", payload);
+      const response = await api.postSellerAuth(payload);
+      console.log("[RESPONSE] ", response);
       alert("판매자 신청이 완료되었습니다.");
       onMenuClose();
     } catch (e) {
-      throw new Error(e);
+      alert(e.response.data.errorMessage);
     }
   };
 
+  // [v]
   const handleApproveSellerRequest = async (waitingId) => {
     try {
-      await api.patchSellerAuth(waitingId);
+      console.log("===================================");
+      console.log("[LOG] 판매자 등록 요청을 승인");
+      console.log("===================================");
+      const response = await api.patchSellerAuth(waitingId);
+      console.log("[RESPONSE] ", response);
       await getSellersAuths();
     } catch (e) {
-      throw new Error(e);
+      alert(e.response.data.errorMessage);
     }
+  };
+
+  // [v]
+  const submitNewProduct = async () => {
+    const payload = {
+      name: productName,
+      price: productPrice,
+      description: productDescription,
+      productCategory: category,
+    };
+    console.log("===================================");
+    console.log("[LOG] 판매 상품 정보를 작성하여 목록에 등록");
+    console.log("===================================");
+    console.log("[REQUEST] ", payload);
+    try {
+      const response = await api.postProduct(payload);
+      console.log("[RESPONSE] ", response);
+      await getMyProducts();
+      setIsProductModalOpen(false);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const getMyProducts = async () => {
+    console.log("===================================");
+    console.log("[LOG] 내가 판매중인 상품 목록을 페이징하며 조회");
+    console.log("===================================");
+    try {
+      const response = await api.getMyProducts();
+      console.log("[RESPONSE] ", response);
+      const { data } = response;
+      setMyproducts(data);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const deleteMyProduct = async (productId) => {
+    console.log("===================================");
+    console.log("[LOG] 판매 상품 정보를 목록에서 삭제");
+    console.log("===================================");
+    try {
+      const response = await api.deleteMyProduct(productId);
+      console.log("[RESPONSE] ", response);
+      await getMyProducts();
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const updateMyProduct = async () => {
+    const payload = {
+      name: productName,
+      price: productPrice,
+      description: productDescription,
+      productCategory: category,
+    };
+    console.log("===================================");
+    console.log("[LOG] 판매 상품 정보를 수정");
+    console.log("===================================");
+    console.log("[REQUEST] ", payload);
+    try {
+      const response = await api.patchProduct(updateProductId, payload);
+      console.log("[RESPONSE] ", response);
+      await getMyProducts();
+      setIsProductModalOpen(false);
+      setIsProductModalModifyMode(false);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const requestProductQuotation = async (productId) => {
+    console.log("===================================");
+    console.log("[LOG] 판매자에게 요청내용(매칭주제 정보) 보내기");
+    console.log("===================================");
+    try {
+      const response = await api.postQuotation(productId);
+      console.log("[RESPONSE] ", response);
+      await getAllProducts();
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const getCustomerRequests = async () => {
+    console.log("===================================");
+    console.log("[LOG] 모든상품의 고객요청 목록을 페이징하며 조회");
+    console.log("===================================");
+    try {
+      const params = {
+        page: 0,
+        size: 10,
+      };
+      console.log("[REQUEST] ", params);
+      const response = api.getQuotations(params);
+      console.log("[RESPONSE] ", response);
+      const { data } = response;
+      setCustomerRequest(data);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const getSellersAuths = async () => {
+    console.log("===================================");
+    console.log("[LOG] 판매자 등록 요청목록을 조회");
+    console.log("===================================");
+    try {
+      const response = await api.getSellerAuth();
+      console.log("[RESPONSE] ", response);
+      const { data } = response;
+      setSellerRequest(data);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const getSellers = async () => {
+    try {
+      console.log("===================================");
+      console.log("[LOG] 판매자들의 목록을 페이징하며 조회");
+      console.log("===================================");
+      const params = { page: 0, size: 10 };
+      const response = await api.getSellers(params);
+      console.log("[RESPONSE] ", response);
+      const { data } = response;
+      setSellers(data);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const approveCustomerRequest = async (requestId) => {
+    console.log("===================================");
+    console.log("[LOG] 판매자 등록 요청을 승인");
+    console.log("===================================");
+    try {
+      const response = await api.patchQuotation(requestId);
+      console.log("[RESPONSE] ", response);
+      await getCustomerRequests();
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const deleteSellerAuth = async (seller) => {
+    try {
+      console.log("===================================");
+      console.log("[LOG] 유저의 판매자 권한을 삭제");
+      console.log("===================================");
+      const response = await api.deleteSellerAuth(seller.id);
+      console.log("[RESPONSE] ", response);
+      await getSellers();
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const getAllProducts = async () => {
+    try {
+      console.log("===================================");
+      console.log("[LOG] 전체 판매상품 목록 조회");
+      console.log("===================================");
+      const params = {
+        page: 0,
+        size: 10,
+      };
+      console.log("[REQUEST] ", params);
+      const response = await api.getProducts(params);
+      console.log("[RESPONSE] ", response);
+      const { data } = response;
+      setProducts(data);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const getAllCustomers = async () => {
+    console.log("===================================");
+    console.log("[LOG] 전체 고객 목록 조회");
+    console.log("===================================");
+    try {
+      const params = {
+        page: 0,
+        size: 10,
+      };
+      console.log("[REQUEST] ", params);
+      const response = await api.getAllCustomers(params);
+      console.log("[RESPONSE] ", response);
+      const { data } = response;
+      setCustomers(data);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
+    }
+  };
+
+  // [v]
+  const handleLogout = () => {
+    console.log("===================================");
+    console.log("[LOG] 로그아웃");
+    console.log("===================================");
+    localStorage.removeItem("access_token");
+    api.default.deleteHeadersAuthorization();
+    window.location.reload();
+  };
+
+  // utils
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const onMenuClose = () => {
+    setAnchorEl(null);
   };
 
   const handleProductRegisterModalOpen = () => {
@@ -216,56 +448,6 @@ export default function Home() {
 
   const handleProductRegisterModalClose = () => {
     setIsProductModalOpen(false);
-  };
-
-  const submitNewProduct = async () => {
-    const payload = {
-      name: productName,
-      price: productPrice,
-      description: productDescription,
-      productCategory: category,
-    };
-
-    try {
-      await api.postProduct(payload);
-      await getMyProducts();
-      setIsProductModalOpen(false);
-    } catch (e) {
-      throw new Error(e);
-    }
-  };
-
-  const getMyProducts = () => {
-    api.getMyProducts().then((res) => {
-      setMyproducts(() => [...res.data]);
-    });
-  };
-
-  const deleteMyProduct = async (productId) => {
-    try {
-      await api.deleteMyProduct(productId);
-      await getMyProducts();
-    } catch (e) {
-      throw new Error(e);
-    }
-  };
-
-  const updateMyProduct = async () => {
-    const payload = {
-      name: productName,
-      price: productPrice,
-      description: productDescription,
-      productCategory: category,
-    };
-
-    try {
-      await api.patchProduct(updateProductId, payload);
-      await getMyProducts();
-      setIsProductModalOpen(false);
-      setIsProductModalModifyMode(false);
-    } catch (e) {
-      throw new Error(e);
-    }
   };
 
   const openProductModifyModal = (productId) => {
@@ -277,68 +459,6 @@ export default function Home() {
     setProductDescription(product.description);
     setCategory(PRODUCT_CATRGORY[product.category.id]);
     setIsProductModalOpen(true);
-  };
-
-  const requestProductQuotation = async (productId) => {
-    try {
-      await api.postQuotation(productId);
-      await getAllProducts();
-    } catch (e) {}
-  };
-
-  const getCustomerRequests = () => {
-    api
-      .getQuotations({
-        page: 0,
-        size: 10,
-      })
-      .then((res) => {
-        setCustomerRequest(() => [...res.data]);
-      });
-  };
-
-  const getSellersAuths = () => {
-    api.getSellerAuth().then((res) => {
-      setSellerRequest(() => [...res.data]);
-    });
-  };
-
-  const getSellers = () => {
-    api
-      .getSellers({
-        page: 0,
-        size: 10,
-      })
-      .then((res) => {
-        setSellers(() => [...res.data]);
-      });
-  };
-
-  const approveCustomerRequest = async (requestId) => {
-    await api.patchQuotation(requestId);
-    await getCustomerRequests();
-  };
-
-  const deleteSellerAuth = async (seller) => {
-    await api.deleteSellerAuth(seller.id);
-    await getSellers();
-  };
-
-  const getAllProducts = () => {
-    api
-      .getProducts({
-        page: 0,
-        size: 10,
-      })
-      .then((res) => {
-        setProducts(() => [...res.data]);
-      });
-  };
-
-  const getAllCustomers = () => {
-    api.getAllCustomers({ page: 0, size: 10 }).then((res) => {
-      setCustomers(() => [...res.data]);
-    });
   };
 
   const ModeScreen = () => {
@@ -363,7 +483,7 @@ export default function Home() {
       ));
     } else if (mode === MODE.seller) {
       return sellers.map((card) => (
-        <Grid item key={card} xs={12} sm={6} md={4}>
+        <Grid item key={card.id} xs={12} sm={6} md={4}>
           <Card
             sx={{
               height: "100%",
@@ -435,7 +555,7 @@ export default function Home() {
       ));
     } else if (mode === MODE.sellerRequest) {
       return sellerRequest.map((card) => (
-        <Grid item key={card} xs={12} sm={6} md={4}>
+        <Grid item key={card.id} xs={12} sm={6} md={4}>
           <Card
             sx={{
               height: "100%",

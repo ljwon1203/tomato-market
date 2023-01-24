@@ -32,10 +32,14 @@ export default function SignUp() {
       password: data.get("password"),
       adminKey: data.get("adminkey"),
     };
-
+    console.log("===================================");
+    console.log("[LOG] 회원가입");
+    console.log("===================================");
+    console.log("[REQUEST] ", payload);
     try {
       // 회원가입 요청
-      await api.signup(payload);
+      const response = await api.signup(payload);
+      console.log("[RESPONSE] ", response);
 
       // 성공 시 자동 로그인 후 이동
       const { headers } = await api.login({
@@ -50,7 +54,8 @@ export default function SignUp() {
       await localStorage.setItem("access_token", JWTToken);
       navigator("/");
     } catch (e) {
-      throw new Error(e);
+      const { response } = e;
+      alert(response.data.errorMessage);
     }
   };
 

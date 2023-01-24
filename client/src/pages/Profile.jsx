@@ -45,25 +45,39 @@ export default function Profile() {
   };
 
   const getUserProfile = async () => {
-    const { data } = await api.getProfile();
-    setUserId(data.id);
-    setUsername(data.username);
-    setNickname(data.nickname);
-    setAuth(AUTH[data.role]);
+    console.log("===================================");
+    console.log("[LOG] 나의 프로필 조회(고객)");
+    console.log("===================================");
+    try {
+      const response = await api.getProfile();
+      console.log("[RESPONSE] ", response);
+      const { data } = response;
+      setUserId(data.id);
+      setUsername(data.username);
+      setNickname(data.nickname);
+      setAuth(AUTH[data.role]);
+      if (AUTH[data.role] === AUTH.SELLER) {
+        getSellerProfile(data.id);
+      }
 
-    if (AUTH[data.role] === AUTH.SELLER) {
-      getSellerProfile(data.id);
+      setIsRenderProfile(true);
+    } catch (e) {
+      alert(e.response.data.errorMessage);
     }
-
-    setIsRenderProfile(true);
   };
 
   const getSellerProfile = async (userId) => {
+    console.log("===================================");
+    console.log("[LOG] 나의 프로필 조회(판매자)");
+    console.log("===================================");
     try {
-      const { data } = await api.getMySellerProfile(userId);
+      const response = await api.getMySellerProfile(userId);
+      console.log("[RESPONSE] ", response);
+
+      const { data } = response;
       setIntroduce(data.introduce);
     } catch (e) {
-      throw new Error(e);
+      alert(e.response.data.errorMessage);
     }
   };
 
@@ -80,28 +94,36 @@ export default function Profile() {
   };
 
   const submitUserProfile = async (nickname) => {
+    console.log("===================================");
+    console.log("[LOG] 나의 프로필 수정(고객)");
+    console.log("===================================");
     const payload = {
       nickname: nickname,
     };
-
+    console.log("[REQUEST] ", payload);
     try {
-      await api.patchProfile(userId, payload);
+      const response = await api.patchProfile(userId, payload);
+      console.log("[RESPONSE] ", response);
       await getUserProfile();
     } catch (e) {
-      throw new Error(e);
+      alert(e.response.data.errorMessage);
     }
   };
 
   const submitSellerProfile = async (introduce) => {
+    console.log("===================================");
+    console.log("[LOG] 나의 프로필 수정(판매자)");
+    console.log("===================================");
     const payload = {
       introduce: introduce,
     };
-
+    console.log("[REQUEST] ", payload);
     try {
-      await api.patchSellerProfile(userId, payload);
+      const response = await api.patchSellerProfile(userId, payload);
+      console.log("[RESPONSE] ", response);
       await getSellerProfile(userId);
     } catch (e) {
-      throw new Error(e);
+      alert(e.response.data.errorMessage);
     }
   };
 
