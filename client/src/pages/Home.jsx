@@ -315,7 +315,7 @@ export default function Home() {
         size: 10,
       };
       console.log("[REQUEST] ", params);
-      const response = api.getQuotations(params);
+      const response = await api.getQuotations(params);
       console.log("[RESPONSE] ", response);
       const { data } = response;
       setCustomerRequest(data);
@@ -358,7 +358,7 @@ export default function Home() {
   // [v]
   const approveCustomerRequest = async (requestId) => {
     console.log("===================================");
-    console.log("[LOG] 판매자 등록 요청을 승인");
+    console.log("[LOG] 고객 구매 요청을 승인");
     console.log("===================================");
     try {
       const response = await api.patchQuotation(requestId);

@@ -63,7 +63,10 @@ public class SellerRequestFormServiceImpl implements SellerRequestFormService{
         user.setRoleSeller();
 
         // role을 변경한 user와 저장되어있던 introduce를 이용해 새로운 seller 객체를 만듭니다.
-        Seller seller = new Seller(user, waiting.getIntroduce());
+        Seller seller = sellerRepository.findByUserId(user.getId()).orElse(new Seller(user, waiting.getIntroduce()));
+
+        // 무조건 isRemoved를 true로 만들어줍니다.
+        seller.revive();
 
         // 모든 작업을 마친 뒤, 요청폼의 승인여부를 승인으로 변경해줍니다.
         waiting.approve();
