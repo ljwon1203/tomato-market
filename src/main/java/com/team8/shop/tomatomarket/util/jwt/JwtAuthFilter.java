@@ -39,11 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             setAuthentication(info.getSubject());
         }
 
-        try{
-            filterChain.doFilter(request, response);
-        } catch (Exception e){
-            jwtExceptionHandler(response,"Token is null",HttpStatus.BAD_REQUEST.value());
-        }
+        filterChain.doFilter(request, response);
     }
 
     private void setAuthentication(String username){

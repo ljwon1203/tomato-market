@@ -1,6 +1,5 @@
 package com.team8.shop.tomatomarket.controller;
 
-
 import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.entity.UserRoleEnum;
 import com.team8.shop.tomatomarket.service.*;
@@ -32,7 +31,7 @@ public class AdminController {
         return sellerServiceImpl.getSellerList(serviceReqDto);
     }
 
-    @PatchMapping("/sellers/{sellerId}")
+    @DeleteMapping("/sellers/{sellerId}")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public void disapproveSellerAuth(@PathVariable Long sellerId){
         sellerServiceImpl.disapproveSellerAuth(sellerId);
@@ -44,7 +43,7 @@ public class AdminController {
         return sellerRequestFormServiceImpl.getSellerWaitings();
     }
 
-    @PatchMapping("/auth/waiting/{waitingId}")
+    @PatchMapping("/auth/waitings/{waitingId}")
     @Secured(UserRoleEnum.Authority.ADMIN)
     public void approveSellerAuth(@PathVariable Long waitingId){
         sellerRequestFormServiceImpl.approveSellerAuth(waitingId);

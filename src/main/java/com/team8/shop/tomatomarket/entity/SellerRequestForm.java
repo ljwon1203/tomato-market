@@ -13,7 +13,7 @@ import javax.persistence.Entity;
 public class SellerRequestForm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name="user_id", nullable = false)
@@ -30,6 +30,10 @@ public class SellerRequestForm {
         this.user = user;
         this.introduce = introduce;
         this.isApproval = false;
+    }
+
+    public void updateIntroduce(String introduce){
+        this.introduce = introduce;
     }
 
     public void approve(){

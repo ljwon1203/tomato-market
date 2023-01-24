@@ -4,11 +4,9 @@ import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.entity.CustomerRequestForm;
 import com.team8.shop.tomatomarket.entity.Product;
 import com.team8.shop.tomatomarket.entity.Seller;
-import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.repository.CustomerRequestFormRepository;
 import com.team8.shop.tomatomarket.repository.ProductRepository;
 import com.team8.shop.tomatomarket.repository.SellerRepository;
-import com.team8.shop.tomatomarket.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +27,23 @@ public class SellerServiceImpl implements SellerService {
 
     //#17-2 판매자 정보 조회
     @Override
-    public GetSellerRespDto getSeller(Long sellerId) {
+    public GetSellerRespDto getSellerByUserId(Long userId) {
+        Seller seller = sellerRepository.findByUserId(userId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
+        );
+
+        List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
+
+        return new GetSellerRespDto(seller, products);
+    }
+
+    @Override
+    public GetSellerRespDto getSellerBySellerId(Long sellerId) {
         Seller seller = sellerRepository.findById(sellerId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
         );
 
-        List<Product> products = productRepository.findAllById(seller.getId());
+        List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
 
         return new GetSellerRespDto(seller, products);
     }
@@ -46,33 +56,39 @@ public class SellerServiceImpl implements SellerService {
         String sortBy = dto.getSortBy();
         boolean isAsc = dto.isAsc();
 
+
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
         // sellerPepository에 있는걸 가져와서 sellerList에 넣음 List
-        List<Seller> sellerList = sellerRepository.findAll(pageable).toList();
+//        List<Seller> sellerList = sellerRepository.findAll(pageable);
+//        System.out.println(sellerList.size());
 
         // getsellerRespDtos ArrayList로 만든다.
-        List<GetSellerRespDto> getSellerRespDtos = new ArrayList<>();
+//        List<GetSellerRespDto> getSellerRespDtos = new ArrayList<>();
 
-        for (Seller seller : sellerList) {
-            //sellerList에 있는 seller를 하나씩 꺼내서
-            List<Product> products = productRepository.findAllById(seller.getId());
-            //seller와 product을 getSellerRespDtos에 담아준다.
-            getSellerRespDtos.add(new GetSellerRespDto(seller, products));
-        }
-        return getSellerRespDtos;
+//        for (Seller seller : sellerList) {
+//            //sellerList에 있는 seller를 하나씩 꺼내서
+//            List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
+//            //seller와 product을 getSellerRespDtos에 담아준다.
+//            getSellerRespDtos.add(new GetSellerRespDto(seller, products));
+//        }
+        return sellerRepository.findAllByIsRemovedFalse(pageable).getContent().stream().map(seller -> {
+            List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
+            return new GetSellerRespDto(seller, products);
+        }).collect(Collectors.toList());
     }
 
     //(판매자) 나의 판매상품 조회
     @Override
-    public GetSellerRespDto getMyProductList(Long userId) {
-        Seller seller = sellerRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 판매자 입니다."));
+    public List<ProductResponseDto> getMyProductList(Long userId) {
+        Seller seller = _getSeller(userId);
 
-        List<Product> productList = productRepository.findAllByUserId(userId);
-        return new GetSellerRespDto(seller, productList);
+        List<Product> productList = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
+
+
+        return productList.stream().map(ProductResponseDto::new).collect(Collectors.toList());
     }
 
     @Override
@@ -95,10 +111,10 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto) {
         String introduce = sellerServiceDto.getIntroduce();
-        List<Product> products = productRepository.findAllById(sellerServiceDto.getSellerId());
 
-        Seller seller = _getSeller(sellerServiceDto.getSellerId());
+        Seller seller = _getSeller(sellerServiceDto.getUserId());
 
+        List<Product> products = productRepository.findAllBySellerId(seller.getId()).orElse(new ArrayList<>());
         seller.updateIntroduce(introduce);
         sellerRepository.save(seller);
         return new GetSellerRespDto(seller, products);
@@ -106,11 +122,14 @@ public class SellerServiceImpl implements SellerService {
 
     // #12 (판매자) 판매 상품 등록
     @Override
-    public void createProduct(ProductRequestDto productRequestDto){
-        Product product = new Product(productRequestDto.getName(),
-                                      productRequestDto.getPrice(),
-                                      productRequestDto.getDesc(),
-                                      productRequestDto.getProductCategory());
+    public void createProduct(CreateProductReqDto dto){
+        Seller seller = _getSeller(dto.getUserId());
+
+        Product product = new Product(dto.getName(),
+                dto.getPrice(),
+                dto.getDescription(),
+                seller,
+                dto.getProductCategory());
         productRepository.save(product);
     }
 
@@ -120,7 +139,7 @@ public class SellerServiceImpl implements SellerService {
         Product product = _getProduct(productId);
         product.updateProduct(productRequestDto.getName(),
                               productRequestDto.getPrice(),
-                              productRequestDto.getDesc(),
+                              productRequestDto.getDescription(),
                               productRequestDto.getProductCategory());
         productRepository.save(product);
     }
@@ -134,7 +153,7 @@ public class SellerServiceImpl implements SellerService {
 
     // (판매자) 고객 구매 요청 목록 조회
     @Override
-    public List<QuotationResponseDto> getQuotation(PageableServiceReqDto dto) {
+    public List<QuotationResponseDto> getQuotation(GetQuotationReqDto dto) {
         int page = dto.getPage();
         int size = dto.getSize();
         String sortBy = dto.getSortBy();
@@ -144,7 +163,7 @@ public class SellerServiceImpl implements SellerService {
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<CustomerRequestForm> customerRequestFormList = customerRequestFormRepository.findAll(pageable).toList();
+        List<CustomerRequestForm> customerRequestFormList = customerRequestFormRepository.findAllByProductSellerUserId(dto.getUserId(), pageable).toList();
         List<QuotationResponseDto> quotationResponseDtoList = new ArrayList<>();
 
         for(CustomerRequestForm customerRequestForm : customerRequestFormList){
@@ -172,8 +191,8 @@ public class SellerServiceImpl implements SellerService {
     }
     
     // 내부 사용: 판매자 검증 by id
-    private Seller _getSeller(Long sellerId) {
-        return sellerRepository.findById(sellerId).orElseThrow(
+    private Seller _getSeller(Long userId) {
+        return sellerRepository.findByUserId(userId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 판매자 입니다.")
         );
     }

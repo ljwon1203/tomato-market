@@ -3,7 +3,7 @@ package com.team8.shop.tomatomarket.dto;
 import lombok.*;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class SellerRequestDto {
-    private final String introduce;
+    private String introduce;
 }

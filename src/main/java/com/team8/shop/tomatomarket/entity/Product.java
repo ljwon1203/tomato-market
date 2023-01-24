@@ -1,6 +1,6 @@
 package com.team8.shop.tomatomarket.entity;
 
-import com.team8.shop.tomatomarket.dto.ProductRequestDto;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -10,9 +10,8 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,10 +23,7 @@ public class Product {
     private int price;
 
     @Column
-    private String desc;
-
-    @Column
-    private String nickname;
+    private String description;
 
     @JoinColumn(name = "seller_id", nullable = false)
     @ManyToOne
@@ -39,18 +35,18 @@ public class Product {
     private ProductCategoryEnum productCategory;
 
 
-    public Product(String name, int price, String desc, ProductCategoryEnum productCategory){
+    public Product(String name, int price, String description, Seller seller, ProductCategoryEnum productCategory){
         this.name = name;
         this.price = price;
-        this.desc = desc;
+        this.seller = seller;
+        this.description = description;
         this.productCategory = productCategory;
     }
 
-    public void updateProduct(String name, int price, String desc, ProductCategoryEnum productCategory){
+    public void updateProduct(String name, int price, String description, ProductCategoryEnum productCategory){
         this.name = name;
         this.price = price;
-        this.desc = desc;
+        this.description = description;
         this.productCategory = productCategory;
     }
-
 }

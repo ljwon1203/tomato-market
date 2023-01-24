@@ -5,8 +5,9 @@ import com.team8.shop.tomatomarket.security.UserDetailsImpl;
 import com.team8.shop.tomatomarket.service.SellerRequestFormServiceImpl;
 import com.team8.shop.tomatomarket.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,13 +28,15 @@ public class UserController {
     public void logout(){}
 
     @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
     public void signup(@RequestBody SignupReqDto reqDto){
         userServiceImpl.signup(reqDto);
     }
 
     @PostMapping("/users/auth/waitings")
-    public void createSellerWaiting(@AuthenticationPrincipal UserDetails userDetails, @RequestBody SellerRequestDto dto){
-        CreateDisapprovedSellerFormReqDto serviceRequestDto = new CreateDisapprovedSellerFormReqDto(userDetails.getUsername(), dto.getIntroduce());
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createSellerWaiting(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody SellerRequestDto dto){
+        CreateDisapprovedSellerFormReqDto serviceRequestDto = new CreateDisapprovedSellerFormReqDto(dto.getIntroduce(), userDetails.getUsername());
         sellerRequestFormServiceImpl.createDisapprovedForm(serviceRequestDto);
     }
 
@@ -49,9 +52,10 @@ public class UserController {
     }
 
     //(고객)프로필 조회
-    @GetMapping("/users/{userId}")
+    @GetMapping("/users")
     public UserResponseDto getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails){
         Long userId = userDetails.getUserId();
         return userServiceImpl.getProfile(userId);
     }
+
 }

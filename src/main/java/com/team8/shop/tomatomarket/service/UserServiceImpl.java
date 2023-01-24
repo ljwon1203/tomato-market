@@ -2,10 +2,13 @@ package com.team8.shop.tomatomarket.service;
 
 import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.entity.User;
+import com.team8.shop.tomatomarket.entity.UserRoleEnum;
 import com.team8.shop.tomatomarket.repository.UserRepository;
 import com.team8.shop.tomatomarket.util.jwt.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,8 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,11 @@ public class UserServiceImpl implements UserService{
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${admin.secret.key}")
+    private String ADMINKEY;
+
+
 
     @Override
     public LoginRespDto login(LoginReqDto dto) {
@@ -63,9 +71,17 @@ public class UserServiceImpl implements UserService{
         // 패스워드 암호화
         String encodePassword = passwordEncoder.encode(password);
 
-        // 새로운 유저 생성
-        User user = new User(username,nickname,encodePassword);
-
+        // 새로운 유저 생성 : admin key 여부에 따라 권한 설정
+        User user;
+        if(dto.getAdminKey() == null){
+            user = new User(username, nickname, encodePassword);
+        }else{
+            boolean isValidAdminKey = dto.getAdminKey().equals(ADMINKEY);
+            if(!isValidAdminKey){
+                throw new IllegalArgumentException("관리자 키가 일치하지 않습니다.");
+            }
+            user = new User(username, nickname, encodePassword, UserRoleEnum.ADMIN);
+        }
         // 저장
         userRepository.save(user);
     }
@@ -114,13 +130,14 @@ public class UserServiceImpl implements UserService{
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<User> userList = userRepository.findAll(pageable).toList();
-
-        List<UserResponseDto> userResponseDtos = new ArrayList<>();
-
-        for (User user : userList) {
-            userResponseDtos.add(new UserResponseDto(user));
-        }
-        return userResponseDtos;
+//        List<User> userList = userRepository.findAll();
+//        System.out.println(userList.size());
+//
+//        List<UserResponseDto> userResponseDtos = new ArrayList<>();
+//
+//        for (User user : userList) {
+//            userResponseDtos.add(new UserResponseDto(user));
+//        }
+        return userRepository.findAllByRole(UserRoleEnum.CUSTOMER, pageable).getContent().stream().map(UserResponseDto::new).collect(Collectors.toList());
     }
 }

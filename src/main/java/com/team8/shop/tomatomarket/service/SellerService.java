@@ -5,9 +5,11 @@ import com.team8.shop.tomatomarket.dto.*;
 import java.util.List;
 
 public interface SellerService {
-    GetSellerRespDto getSeller(Long sellerId);
+    GetSellerRespDto getSellerBySellerId(Long sellerId);
 
-    GetSellerRespDto getMyProductList(Long userId);
+    GetSellerRespDto getSellerByUserId(Long userId);
+
+    List<ProductResponseDto> getMyProductList(Long userId);
     
     List<GetSellerRespDto>  getSellerList(PageableServiceReqDto dto);
 
@@ -15,13 +17,13 @@ public interface SellerService {
     
     GetSellerRespDto sellerUpdate(SellerServiceDto sellerServiceDto);
 
-    void createProduct(ProductRequestDto productRequestDto);
+    void createProduct(CreateProductReqDto dto);
 
     void updateProduct(Long productId, ProductRequestDto productRequestDto);
 
     void deleteProduct(Long productId);
 
-    List<QuotationResponseDto> getQuotation(PageableServiceReqDto dto);
+    List<QuotationResponseDto> getQuotation(GetQuotationReqDto dto);
 
     void approveQuotation(Long requestId);
 }

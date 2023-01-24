@@ -1,33 +1,29 @@
 package com.team8.shop.tomatomarket.dto;
 
 import com.team8.shop.tomatomarket.entity.Product;
-import com.team8.shop.tomatomarket.entity.ProductCategory;
-import com.team8.shop.tomatomarket.entity.ProductCategoryEnum;
-import com.team8.shop.tomatomarket.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
-@NoArgsConstructor
 public class ProductResponseDto {
+    private final Long id;
 
-    private String name;
+    private final String name;
 
-    private int price;
+    private final int price;
 
-    private String desc;
+    private final String description;
 
-    private String username;
+    private final UserResponseDto user;
 
-    private CategoryDto category;
+    private final CategoryDto category;
 
     public ProductResponseDto(Product product) {
+        this.id = product.getId();
         this.name = product.getName();
         this.price = product.getPrice();
-        this.desc = product.getDesc();
-        this.username = product.getSeller().getUser().getUsername();
+        this.description = product.getDescription();
+        this.user = new UserResponseDto(product.getSeller().getUser());
         this.category = new CategoryDto(product.getProductCategory());
     }
 }

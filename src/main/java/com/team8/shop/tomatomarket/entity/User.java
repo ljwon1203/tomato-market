@@ -1,6 +1,7 @@
 package com.team8.shop.tomatomarket.entity;
 
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -23,7 +24,7 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private UserRoleEnum role;
 
     public User(String email, String nickname, String password, UserRoleEnum role){
