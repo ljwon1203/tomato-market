@@ -3,6 +3,7 @@ package com.team8.shop.tomatomarket.service;
 import com.team8.shop.tomatomarket.dto.*;
 import com.team8.shop.tomatomarket.entity.User;
 import com.team8.shop.tomatomarket.entity.UserRoleEnum;
+import com.team8.shop.tomatomarket.exception.TomatoApiException;
 import com.team8.shop.tomatomarket.repository.UserRepository;
 import com.team8.shop.tomatomarket.util.jwt.JwtUtils;
 
@@ -110,7 +111,7 @@ public class UserServiceImpl implements UserService{
     // 내부 사용 : 유저 검증 by id
     private User _getUser(Long userId){
         return userRepository.findById(userId).orElseThrow(
-                ()->new IllegalArgumentException("사용자가 존재하지 않습니다."));
+                ()->new TomatoApiException("사용자가 존재하지 않습니다."));
     }
 
     // 내부 사용 : 유저 검증 by username

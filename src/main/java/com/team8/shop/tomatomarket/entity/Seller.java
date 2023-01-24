@@ -38,4 +38,6 @@ public class Seller {
     public void remove(){
         this.isRemoved = true;
     }
+
+    public void revive() {this.isRemoved = false;}
 }
